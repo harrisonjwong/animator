@@ -168,19 +168,66 @@ public class AnimationModelImpl implements AnimationModel {
   }
 
   @Override
-  public void addKeyframe(String s, int time, ShapeInfo info) {
+  public String deleteShape(String name) {
+    if (name == null) {
+      throw new IllegalArgumentException("the given name is null");
+    }
+    if (shapes.containsKey(name)) {
+      shapes.remove(name);
+      return "shape " + name + " deleted";
+    } else {
+      return "shape " + name + " cannot be found";
+    }
+  }
+
+  @Override
+  public String addKeyframe(String name, int time) {
+    if (name == null) {
+      throw new IllegalArgumentException("the given name is null");
+    }
+    if (time < 0) {
+      throw new IllegalArgumentException("the given time cannot be less than 0");
+    }
+    Shape s = shapes.get(name);
     if (s == null) {
-      throw new IllegalArgumentException("given name is null");
+      return "shape " + name + " cannot be found";
+    }
+    return s.addKeyframe(time);
+  }
+
+  @Override
+  public String editKeyframe(String name, int time, ShapeInfo info) {
+    if (name == null) {
+      throw new IllegalArgumentException("the given name is null");
+    }
+    if (time < 0) {
+      throw new IllegalArgumentException("the given time cannot be less than 0");
     }
     if (info == null) {
-      throw new IllegalArgumentException("given info is null");
+      throw new IllegalArgumentException("the given info is null");
     }
-    Shape shape = shapes.get(s);
-    if (shape == null) {
-      throw new IllegalArgumentException("the given name does not have a matching shape");
+    Shape s = shapes.get(name);
+    if (s == null) {
+      return "shape " + name + " cannot be found";
     }
-//    shape.addKeyframe(time, info);
+    return s.editKeyframe(time, info);
   }
+
+  @Override
+  public String deleteKeyframe(String name, int time) {
+    if (name == null) {
+      throw new IllegalArgumentException("the given name is null");
+    }
+    if (time < 0) {
+      throw new IllegalArgumentException("the given time cannot be less than 0");
+    }
+    Shape s = shapes.get(name);
+    if (s == null) {
+      return "shape " + name + " cannot be found";
+    }
+    return s.deleteKeyframe(time);
+  }
+
 
   /**
    * Embedded builder class that constructs an instance of an AnimationModel based on steps.

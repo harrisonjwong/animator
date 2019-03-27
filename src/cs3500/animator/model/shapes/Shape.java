@@ -39,7 +39,6 @@ public interface Shape {
    * @return the type of this shape
    */
   String getType();
-
   /**
    * Gets the type of this shape as an SVG shape type.
    *
@@ -67,4 +66,25 @@ public interface Shape {
    * @return the last tick of the last animation of this shape
    */
   int getEnd();
+
+  /**
+   * Adds a keyframe to this shape at the given time.
+   * @param time integer telling what time to add the keyframe
+   * @return a message to be displayed to the user, either confirming addition of keyframe, or
+   *         an appropriate error message
+   * @throws IllegalArgumentException if the time is less than 0
+   */
+  String addKeyframe(int time);
+
+  /**
+   * Edits a keyframe for this shape at the given time.
+   * @param time integer telling what time to edit the keyframe at
+   * @param info shape information to be displayed at the time
+   * @return a message to be displayed to the user, either confirming editing of keyframe, or
+   *         an appropriate error message
+   * @throws IllegalArgumentException if the time is less than 0 or the shape info is null
+   */
+  String editKeyframe(int time, ShapeInfo info);
+
+  String deleteKeyframe(int time);
 }

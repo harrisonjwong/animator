@@ -33,6 +33,45 @@ public interface AnimationModel extends ReadOnlyAnimationModel {
    */
   String animationAsText();
 
-  void addKeyframe(String s, int time, ShapeInfo info);
+  /**
+   * Deletes a shape based on a name.
+   * @param name the name of the shape to be deleted
+   * @return a message to be displayed to the user, either confirming the shape deletion or
+   *         an appropriate error message
+   * @throws IllegalArgumentException if the given string is null
+   */
+  String deleteShape(String name);
+
+  /**
+   * Adds a keyframe for a given shape name at a given time.
+   * @param name the given shape name to add a keyframe for
+   * @param time the time to add the keyframe at
+   * @return a message to be displayed to the user, either confirming the keyframe addition or
+   *         an appropriate error message
+   * @throws IllegalArgumentException if the time is less than 0 or the name is null
+   */
+  String addKeyframe(String name, int time);
+
+  /**
+   * Edits a keyframe for a given shape name at a given time.
+   * @param name the name of the shape to edit the keyframe for
+   * @param time the time to edit the keyframe at
+   * @param info the shape information to be placed at that keyframe
+   * @return a message to be displayed to the user, either confirming the keyframe edit or
+   *         an appropriate error message
+   * @throws IllegalArgumentException if the time is less than 0, the shape name is null, or
+   *         the shape info is null
+   */
+  String editKeyframe(String name, int time, ShapeInfo info);
+
+  /**
+   * Deletes a keyframe for a given shape at a given time.
+   * @param name the name of the shape to delete the keyframe for
+   * @param time the time to delete the keyframe at
+   * @return a message to be displayed to the user, either confirming the deletion or
+   *         an appropriate error message
+   * @throws IllegalArgumentException if the given time is less than 0 or the name is null
+   */
+  String deleteKeyframe(String name, int time);
 
 }

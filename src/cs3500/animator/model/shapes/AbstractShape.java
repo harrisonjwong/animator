@@ -1,6 +1,7 @@
 package cs3500.animator.model.shapes;
 
 import cs3500.animator.model.motions.Motion;
+import cs3500.animator.model.motions.MotionImpl;
 import cs3500.animator.model.motions.info.ShapeInfo;
 import cs3500.animator.model.motions.info.ShapeInfoImpl;
 import cs3500.animator.model.types.Color;
@@ -27,6 +28,9 @@ abstract class AbstractShape implements Shape {
    */
   private ArrayList<Motion> motions;
 
+  private int soloKeyframeTime;
+  private ShapeInfo soloKeyframeInfo;
+
   /**
    * Constructor for AbstractShape that takes a name and creates a new list of motions.
    * @param name the name of the shape
@@ -38,6 +42,8 @@ abstract class AbstractShape implements Shape {
     }
     this.name = name;
     this.motions = new ArrayList<>();
+    this.soloKeyframeTime = -1;
+    this.soloKeyframeInfo = null;
   }
 
   @Override
@@ -109,6 +115,161 @@ abstract class AbstractShape implements Shape {
     }
   }
 
+  @Override
+  public String addKeyframe(int time) {
+    if (time < 0) {
+      throw new IllegalArgumentException("the time can't be less than 1");
+    }
+    if (motions.isEmpty()) {
+      if (this.soloKeyframeTime == -1) { //there is a no time for a keyframe currently
+        soloKeyframeTime = time;
+        return "keyframe successfully added for shape " + name + " at time " + time;
+      } else { //there is a time for a keyframe currently
+        if (soloKeyframeInfo != null) { //there is info for that keyframe, then create a motion
+          int firstTime = (soloKeyframeTime < time) ? soloKeyframeTime : time;
+          int secondTime = (soloKeyframeTime < time) ? time : soloKeyframeTime;
+          motions.add(new MotionImpl(firstTime, secondTime, soloKeyframeInfo, soloKeyframeInfo));
+          //resets them back to zero for the case of all keyframes being removed again...
+          soloKeyframeTime = -1;
+          soloKeyframeInfo = null;
+          return "keyframe successfully added for shape " + name + " at time " + time + "; "
+              + "motion successfully added from time " + firstTime + " to " + secondTime;
+        } else { //there is no info for the first keyframe
+          return "error: must add keyframe information for shape " + name + " at time "
+              + soloKeyframeTime + " first";
+        }
+      }
+    } else {
+      //gets the first and last motions in the animation
+      Motion first = motions.get(0);
+      Motion last = motions.get(motions.size() - 1);
+      if (time < first.getStartTime()) { //if it's before first, add new motion to extend first
+        motions.add(0, new MotionImpl(time, first.getStartTime(),
+            first.getStartInfo(), first.getStartInfo()));
+        return "keyframe successfully added for shape " + name + " at time " + time;
+      } else if (time > last.getFinishTime()) { //after last, add new motion to extend last
+        motions.add(motions.size(), new MotionImpl(last.getFinishTime(), time,
+            last.getFinishInfo(), last.getFinishInfo()));
+        return "keyframe successfully added for shape " + name + " at time " + time;
+      } else { //it's somewhere in the middle of the motions
+        for (int i = 0; i < motions.size(); i++) {
+          //it's on some border
+          if ((motions.get(i).getStartTime() == time) || (motions.get(i).getFinishTime() == time)) {
+            return "keyframe for shape " + name + " already exists at " + time;
+          } else if (motions.get(i).getStartTime() < time
+              && motions.get(i).getFinishTime() > time) {
+            Motion removing = motions.remove(i);
+            ShapeInfo tweened = tween(time, removing.getStartTime(), removing.getFinishTime(),
+                removing.getStartInfo(), removing.getFinishInfo());
+            Motion toAdd1 = new MotionImpl(removing.getStartTime(), time,
+                removing.getStartInfo(), tweened);
+            Motion toAdd2 = new MotionImpl(time, removing.getFinishTime(),
+                tweened, removing.getFinishInfo());
+            motions.add(i, toAdd1);
+            motions.add(i + 1, toAdd2);
+            return "keyframe successfully added for shape " + name + " at time " + time;
+          }
+        }
+        return "error: an unexpected error occurred, and the keyframe could not be added";
+      }
+    }
+  }
+
+  @Override
+  public String editKeyframe(int time, ShapeInfo info) {
+    //check inputs
+    if (time < 0) {
+      throw new IllegalArgumentException("the given time is less than 0");
+    }
+    if (info == null) {
+      throw new IllegalArgumentException("the given shape info is null");
+    }
+    //if no motions: must set keyframe info for solo keyframe, otherwise error
+    if (motions.isEmpty()) {
+      if (soloKeyframeInfo == null && soloKeyframeTime == time) {
+        soloKeyframeInfo = info;
+        return "keyframe successfully edited for shape " + name + " at time " + time;
+      } else if (soloKeyframeTime == -1) {
+        return "error: must add a keyframe for shape " + name + " first";
+      } else {
+        return "error: must edit the keyframe for shape " + name + " at time "
+            + soloKeyframeTime + " first";
+      }
+    } else { //there are motions
+      Motion first = motions.get(0);
+      Motion last = motions.get(motions.size() - 1);
+      if (first.getStartTime() == time) { //edit the first motion's start
+        motions.remove(0);
+        Motion toAdd = new MotionImpl(time, first.getFinishTime(), info, first.getFinishInfo());
+        motions.add(0, toAdd);
+        return "keyframe successfully edited for shape " + name + " at time " + time;
+      } else if (last.getFinishTime() == time) { //edit the last motion's finish
+        motions.remove(motions.size() - 1);
+        Motion toAdd = new MotionImpl(last.getStartTime(), time, last.getStartInfo(), info);
+        motions.add(toAdd);
+        return "keyframe successfully edited for shape " + name + " at time " + time;
+      } else { //edit two motions
+        //should only go to second to last motion, avoiding index oob error
+        //TODO: Potential error with edge case sizes, think harder
+        for (int i = 0; i < motions.size() - 1; i++) {
+          Motion current = motions.get(i);
+          Motion next = motions.get(i + 1);
+          if (current.getFinishTime() == time && next.getStartTime() == time) {
+            motions.remove(i);
+            motions.remove(i);
+            Motion toAdd1 = new MotionImpl(current.getStartTime(), time,
+                current.getStartInfo(), info);
+            Motion toAdd2 = new MotionImpl(time, next.getFinishTime(),
+                info, next.getFinishInfo());
+            motions.add(i, toAdd1);
+            motions.add(i + 1, toAdd2);
+            return "keyframe successfully edited for shape " + name + " at time " + time;
+          }
+        }
+        return "error: no keyframe exists for shape " + name + " at time " + time;
+      }
+    }
+  }
+
+  @Override
+  public String deleteKeyframe(int time) {
+    if (motions.isEmpty()) {
+      if (soloKeyframeTime == time) {
+        soloKeyframeTime = -1;
+        soloKeyframeInfo = null;
+        return "keyframe successfully deleted for shape " + name + " at time " + time;
+      } else {
+        return "error: no keyframe exists for shape " + name + " at time " + time;
+      }
+    } else {
+      Motion first = motions.get(0);
+      Motion last = motions.get(motions.size() - 1);
+      if (first.getStartTime() == time) { //delete the first motion
+        motions.remove(0);
+        return "keyframe successfully deleted for shape " + name + " at time " + time;
+      } else if (last.getFinishTime() == time) { //delete the last motion
+        motions.remove(motions.size() - 1);
+        return "keyframe successfully deleted for shape " + name + " at time " + time;
+      } else { //it's somewhere in the middle
+        //TODO: Potential error with edge case sizes, think harder
+        for (int i = 0; i < motions.size() - 1; i++) {
+          Motion current = motions.get(i);
+          Motion next = motions.get(i + 1);
+          if (current.getFinishTime() == time && next.getStartTime() == time) {
+            motions.remove(i);
+            motions.remove(i);
+            Motion toAdd1 = new MotionImpl(current.getStartTime(), next.getFinishTime(),
+                current.getStartInfo(), next.getFinishInfo());
+            motions.add(i, toAdd1);
+            return "keyframe successfully deleted for shape " + name + " at time " + time;
+          }
+        }
+        return "error: no keyframe exists for shape " + name + " at time " + time;
+      }
+    }
+  }
+
+
   private ShapeInfo tween(int currentTick, int startTick, int endTick,
       ShapeInfo start, ShapeInfo end) {
     //uses the formula 𝑓(𝑡)=𝑎(𝑡𝑏−𝑡/𝑡𝑏−𝑡𝑎)+𝑏(𝑡−𝑡𝑎/𝑡𝑏−𝑡𝑎)
@@ -135,6 +296,5 @@ abstract class AbstractShape implements Shape {
     Color newColor = new Color((int)newColorR, (int)newColorG, (int)newColorB);
 
     return new ShapeInfoImpl(newPos, newSize, newColor);
-
   }
 }
