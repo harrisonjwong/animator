@@ -74,4 +74,13 @@ public interface AnimationModel extends ReadOnlyAnimationModel {
    */
   String deleteKeyframe(String name, int time);
 
+  /**
+   * Tells whether the given shape has a keyframe at this time.
+   * @param name name of the shape
+   * @param time integer representing the tick at which to check
+   * @return true if there is a keyframe at the given time, false otherwise
+   * @throws IllegalArgumentException if the name is null or the time is less than 0
+   */
+  boolean isKeyframe(String name, int time);
+
 }

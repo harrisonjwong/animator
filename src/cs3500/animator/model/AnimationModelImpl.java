@@ -228,6 +228,21 @@ public class AnimationModelImpl implements AnimationModel {
     return s.deleteKeyframe(time);
   }
 
+  @Override
+  public boolean isKeyframe(String name, int time) {
+    if (name == null) {
+      throw new IllegalArgumentException("the given name is null");
+    }
+    if (time < 0) {
+      throw new IllegalArgumentException("the given time cannot be less than 0");
+    }
+    Shape s = shapes.get(name);
+    if (s == null) {
+      return false;
+    }
+    return s.isKeyframe(time);
+  }
+
 
   /**
    * Embedded builder class that constructs an instance of an AnimationModel based on steps.

@@ -93,12 +93,12 @@ abstract class AbstractShape implements Shape {
             m.getStartInfo(), m.getFinishInfo());
       }
     }
-    if (motions.isEmpty()) {
-      throw new IllegalArgumentException("this shape has no info at the given time");
-    } else {
+//    if (motions.isEmpty()) {
+//      throw new IllegalArgumentException("this shape has no info at the given time");
+//    } else {
       return new ShapeInfoImpl(new Position2D(0, 0),
           new ShapeSize(0, 0), new Color(0, 0, 0));
-    }
+//    }
   }
 
   @Override
@@ -266,6 +266,24 @@ abstract class AbstractShape implements Shape {
         }
         return "error: no keyframe exists for shape " + name + " at time " + time;
       }
+    }
+  }
+
+  @Override
+  public boolean isKeyframe(int time) {
+    if (time < 0) {
+      throw new IllegalArgumentException("time cannot be less than 0");
+    }
+    if (motions.isEmpty()) {
+      return soloKeyframeTime == time;
+    } else {
+      for (int i = 0; i < motions.size(); i++) {
+        Motion current = motions.get(i);
+        if (current.getStartTime() == time || current.getFinishTime() == time) {
+          return true;
+        }
+      }
+      return false;
     }
   }
 

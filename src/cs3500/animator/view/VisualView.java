@@ -96,4 +96,9 @@ public class VisualView extends JFrame implements AnimationView {
     return m == this.model;
   }
 
+  @Override
+  public void setTickLabel(int speed, int tps) {
+    //do nothing
+  }
+
 }

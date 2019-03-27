@@ -28,4 +28,9 @@ abstract class AbstractTextualView implements AnimationView {
   public AnimationPanel getPanel() {
     throw new UnsupportedOperationException("can't get panel from textual views");
   }
+
+  @Override
+  public void setTickLabel(int speed, int tps) {
+    throw new UnsupportedOperationException("can't set label for textual views");
+  }
 }

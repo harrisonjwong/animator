@@ -2,7 +2,13 @@ package cs3500.animator.controller;
 
 import cs3500.animator.model.AnimationModel;
 import cs3500.animator.model.motions.info.ShapeInfo;
+import cs3500.animator.model.motions.info.ShapeInfoImpl;
+import cs3500.animator.model.shapes.Oval;
+import cs3500.animator.model.shapes.Rectangle;
 import cs3500.animator.model.shapes.Shape;
+import cs3500.animator.model.types.Color;
+import cs3500.animator.model.types.Position2D;
+import cs3500.animator.model.types.ShapeSize;
 import cs3500.animator.view.AnimationView;
 import cs3500.animator.view.AnimationView.ViewType;
 import cs3500.animator.view.ButtonListener;
@@ -11,6 +17,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.JColorChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.Timer;
 
 /**
@@ -79,6 +88,7 @@ public class AnimationControllerImpl implements AnimationController {
       int delay = 1000 / speed;
 
       this.timer = new Timer(delay, ((ActionEvent e) -> {
+        this.view.setTickLabel(this.tick, this.speed);
         List<ShapeInfo> infos = new ArrayList<>();
         List<String> types = new ArrayList<>();
 
@@ -137,6 +147,28 @@ public class AnimationControllerImpl implements AnimationController {
       this.changeSpeed(false);
       view.resetFocus();
     });
+    buttonClickedMap.put("Add Shape Button", () -> {
+      addShape();
+      view.resetFocus();
+    });
+    buttonClickedMap.put("Remove Shape Button", () -> {
+      removeShape();
+      view.resetFocus();
+    });
+    buttonClickedMap.put("Add Keyframe Button", () -> {
+      addKeyframe();
+      view.resetFocus();
+    });
+
+    buttonClickedMap.put("Edit Keyframe Button", () -> {
+      editKeyframe();
+      view.resetFocus();
+    });
+
+    buttonClickedMap.put("Remove Keyframe Button", () -> {
+      removeKeyframe();
+      view.resetFocus();
+    });
 
     buttonClickedMap.put("Exit Button", () -> {
       System.exit(0);
@@ -144,6 +176,154 @@ public class AnimationControllerImpl implements AnimationController {
 
     buttonListener.setButtonClickedActionMap(buttonClickedMap);
     this.view.addActionListener(buttonListener);
+  }
+
+  private void addShape() {
+    String shapeName = JOptionPane.showInputDialog("Enter shape name");
+    String[] options = {"Rectangle", "Ellipse"};
+    String shapeType = (String)JOptionPane.showInputDialog(null, "What shape type?",
+        "Shape type selector", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+    switch (shapeType) {
+      case "Rectangle":
+        this.model.addShape(new Rectangle(shapeName));
+        JOptionPane.showMessageDialog(null, "Rectangle " + shapeName + " added");
+        break;
+      case "Ellipse":
+        this.model.addShape(new Oval(shapeName));
+        JOptionPane.showMessageDialog(null, "Ellipse " + shapeName + " added");
+        break;
+      default:
+        break;
+    }
+  }
+
+  private void removeShape() {
+    String shapeName = JOptionPane.showInputDialog("Enter shape name");
+    String message = model.deleteShape(shapeName);
+    JOptionPane.showMessageDialog(null, message);
+  }
+
+  private void addKeyframe() {
+    JTextField shapeName = new JTextField();
+    JTextField time = new JTextField();
+    Object[] message = {
+        "Shape Name:", shapeName,
+        "Time:", time,
+    };
+    int option = JOptionPane.showConfirmDialog(null, message,
+        "Add keyframe", JOptionPane.OK_CANCEL_OPTION);
+    if (option == JOptionPane.OK_OPTION) {
+      int num;
+      try {
+        num = Integer.parseInt(time.getText());
+      } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "the number is invalid");
+        return;
+      }
+      if (num < 0) {
+        JOptionPane.showMessageDialog(null, "the number must be greater than 0");
+      }
+      String msg = model.addKeyframe(shapeName.getText(), num);
+      JOptionPane.showMessageDialog(null, msg);
+    }
+  }
+
+  private void editKeyframe() {
+    JTextField shapeName = new JTextField();
+    JTextField time = new JTextField();
+    Object[] message = {
+        "Shape Name:", shapeName,
+        "Time:", time,
+    };
+    int option = JOptionPane.showConfirmDialog(null, message,
+        "Edit keyframe", JOptionPane.OK_CANCEL_OPTION);
+    if (option == JOptionPane.OK_OPTION) {
+      int num;
+      try {
+        num = Integer.parseInt(time.getText());
+      } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "the number is invalid");
+        return;
+      }
+      if (num < 0) {
+        JOptionPane.showMessageDialog(null, "the number must be greater than 0");
+      }
+
+      if (model.isKeyframe(shapeName.getText(), num)) {
+        ShapeInfo infoAtTime = model.shapeInfoAtTime(shapeName.getText(), num);
+
+        JTextField inputX = new JTextField(Integer.toString(infoAtTime.getPosition().getX()));
+        JTextField inputY = new JTextField(Integer.toString(infoAtTime.getPosition().getY()));
+        JTextField inputW = new JTextField(Integer.toString(infoAtTime.getSize().getW()));
+        JTextField inputH = new JTextField(Integer.toString(infoAtTime.getSize().getH()));
+        JColorChooser colorChooser = new JColorChooser();
+
+        Object[] secondPrompt = {
+            "x-location:", inputX, "y-location:", inputY,
+            "Width:", inputW, "Height:", inputH,
+            "Color:", colorChooser
+        };
+        int b = JOptionPane.showConfirmDialog(null, secondPrompt,
+            "Edit keyframe", JOptionPane.OK_CANCEL_OPTION);
+
+        int outX;
+        int outY;
+        int outW;
+        int outH;
+        try {
+          outX = Integer.parseInt(inputX.getText());
+          outY = Integer.parseInt(inputY.getText());
+          outW = Integer.parseInt(inputW.getText());
+          outH = Integer.parseInt(inputH.getText());
+        } catch (NumberFormatException e) {
+          JOptionPane.showMessageDialog(null, "a number is invalid");
+          return;
+        }
+        if (outW < 0 || outH < 0) {
+          JOptionPane.showMessageDialog(null, "shape size invalid");
+          return;
+        }
+        int outR = colorChooser.getColor().getRed();
+        int outG = colorChooser.getColor().getGreen();
+        int outB = colorChooser.getColor().getBlue();
+
+        Position2D posn = new Position2D(outX, outY);
+        ShapeSize size = new ShapeSize(outW, outH);
+        Color color = new Color(outR, outG, outB);
+        ShapeInfo newShapeInfo = new ShapeInfoImpl(posn, size, color);
+
+        String msg = model.editKeyframe(shapeName.getText(), num, newShapeInfo);
+        JOptionPane.showMessageDialog(null, msg);
+      } else {
+        JOptionPane.showMessageDialog(null, "there is no keyframe at this time");
+      }
+    }
+
+  }
+
+  private void removeKeyframe() {
+    JTextField shapeName = new JTextField();
+    JTextField time = new JTextField();
+    Object[] message = {
+        "Shape Name:", shapeName,
+        "Time:", time,
+    };
+    int option = JOptionPane.showConfirmDialog(null, message,
+        "Remove keyframe", JOptionPane.OK_CANCEL_OPTION);
+    if (option == JOptionPane.OK_OPTION) {
+      int num;
+      try {
+        num = Integer.parseInt(time.getText());
+      } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "the number is invalid");
+        return;
+      }
+      if (num < 0) {
+        JOptionPane.showMessageDialog(null, "the number must be greater than 0");
+      }
+      String msg = model.deleteKeyframe(shapeName.getText(), num);
+      JOptionPane.showMessageDialog(null, msg);
+    }
   }
 
   /**

@@ -61,6 +61,8 @@ public interface AnimationView {
    */
   boolean sameModel(AnimationModel m);
 
+  void setTickLabel(int tick, int tps);
+
 
   /**
    * A ViewType is one of Text, SVG, Edit, Visual.

@@ -86,5 +86,20 @@ public interface Shape {
    */
   String editKeyframe(int time, ShapeInfo info);
 
+  /**
+   * Deletes a keyframe for this shape at the given time.
+   * @param time integer telling what time to delete the keyframe at
+   * @return a message to be displayed to the user, either confirming the deletion,
+   *         or an appropriate error message
+   * @throws IllegalArgumentException if the time is less than 0
+   */
   String deleteKeyframe(int time);
+
+  /**
+   * Tells whether the given time is a keyframe in this shape.
+   * @param time integer telling what time to check
+   * @return true if it is a keyframe, false otherwise
+   * @throws IllegalArgumentException if the time is less than 0
+   */
+  boolean isKeyframe(int time);
 }

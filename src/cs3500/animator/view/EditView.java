@@ -7,7 +7,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 
@@ -27,6 +30,17 @@ public class EditView extends JFrame implements AnimationView {
   private JToggleButton loopButton;
   private JButton incSpeedButton;
   private JButton decSpeedButton;
+
+  private JButton addShapeButton;
+  private JButton removeShapeButton;
+  private JButton addKeyframeButton;
+  private JButton editKeyframeButton;
+  private JButton removeKeyframeButton;
+
+  private JLabel tickLabel;
+
+  private JPanel topButtonPanel;
+  private JPanel bottomButtonPanel;
 
   /**
    * Constructs an edit view given an animation model and ticks per second.
@@ -48,6 +62,8 @@ public class EditView extends JFrame implements AnimationView {
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setLocation(model.getWindowX(), model.getWindowY());
 
+    this.setLayout(new BorderLayout());
+
     panel = new AnimationPanel();
     panel.setPreferredSize(new Dimension(model.getWindowWidth(), model.getWindowHeight()));
     pane = new JScrollPane(panel);
@@ -56,6 +72,7 @@ public class EditView extends JFrame implements AnimationView {
     pane.setPreferredSize(new Dimension(model.getWindowWidth(), model.getWindowHeight()));
     this.add(pane, BorderLayout.CENTER);
 
+    //Playback controls
     this.playPauseButton = new JButton("Play/Pause");
     this.playPauseButton.setActionCommand("PlayPause Button");
     this.restartButton = new JButton("Restart");
@@ -66,14 +83,40 @@ public class EditView extends JFrame implements AnimationView {
     this.incSpeedButton.setActionCommand("IncSpeed Button");
     this.decSpeedButton = new JButton("Speed Down");
     this.decSpeedButton.setActionCommand("DecSpeed Button");
+    this.tickLabel = new JLabel();
 
-    this.setLayout(new FlowLayout());
+    //Top button bar
+    this.topButtonPanel = new JPanel();
+    this.topButtonPanel.add(playPauseButton);
+    this.topButtonPanel.add(restartButton);
+    this.topButtonPanel.add(loopButton);
+    this.topButtonPanel.add(incSpeedButton);
+    this.topButtonPanel.add(decSpeedButton);
+    this.topButtonPanel.add(this.tickLabel);
+    this.add(topButtonPanel, BorderLayout.NORTH);
 
-    this.add(playPauseButton);
-    this.add(restartButton);
-    this.add(loopButton);
-    this.add(incSpeedButton);
-    this.add(decSpeedButton);
+
+    //Editing controls
+    this.addShapeButton = new JButton("Add Shape");
+    this.addShapeButton.setActionCommand("Add Shape Button");
+    this.removeShapeButton = new JButton("Remove Shape");
+    this.removeShapeButton.setActionCommand("Remove Shape Button");
+    this.addKeyframeButton = new JButton("Add Keyframe");
+    this.addKeyframeButton.setActionCommand("Add Keyframe Button");
+    this.editKeyframeButton = new JButton("Edit Keyframe");
+    this.editKeyframeButton.setActionCommand("Edit Keyframe Button");
+    this.removeKeyframeButton = new JButton("Remove Keyframe");
+    this.removeKeyframeButton.setActionCommand("Remove Keyframe Button");
+
+
+    this.bottomButtonPanel = new JPanel();
+    this.bottomButtonPanel.add(addShapeButton);
+    this.bottomButtonPanel.add(removeShapeButton);
+    this.bottomButtonPanel.add(addKeyframeButton);
+    this.bottomButtonPanel.add(editKeyframeButton);
+    this.bottomButtonPanel.add(removeKeyframeButton);
+    this.add(bottomButtonPanel, BorderLayout.SOUTH);
+
 
     pane.setPreferredSize(new Dimension(700, 700));
     this.pack();
@@ -89,6 +132,11 @@ public class EditView extends JFrame implements AnimationView {
     this.loopButton.addActionListener(listener);
     this.incSpeedButton.addActionListener(listener);
     this.decSpeedButton.addActionListener(listener);
+    this.addShapeButton.addActionListener(listener);
+    this.removeShapeButton.addActionListener(listener);
+    this.addKeyframeButton.addActionListener(listener);
+    this.editKeyframeButton.addActionListener(listener);
+    this.removeKeyframeButton.addActionListener(listener);
   }
 
   @Override
@@ -115,6 +163,11 @@ public class EditView extends JFrame implements AnimationView {
   public void resetFocus() {
     this.setFocusable(true);
     this.requestFocus();
+  }
+
+  @Override
+  public void setTickLabel(int tick, int tps) {
+    this.tickLabel.setText("Tick: " + tick + " // Speed(TPS): " + tps);
   }
 
   @Override
