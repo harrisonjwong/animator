@@ -22,8 +22,8 @@ public class EditView extends JFrame implements AnimationView {
   private ReadOnlyAnimationModel model;
   private AnimationPanel panel;
   private JScrollPane pane;
-  private JButton playButton;
-  private JButton pauseButton;
+  private JButton playPauseButton;
+//  private JButton pauseButton;
   private JButton restartButton;
   private JToggleButton loopButton;
   private JButton incSpeedButton;
@@ -57,12 +57,10 @@ public class EditView extends JFrame implements AnimationView {
     pane.setPreferredSize(new Dimension(model.getWindowWidth(), model.getWindowHeight()));
     this.add(pane, BorderLayout.CENTER);
 
-
-
-    this.playButton = new JButton("Play");
-    this.playButton.setActionCommand("Play Button");
-    this.pauseButton = new JButton("Pause");
-    this.pauseButton.setActionCommand("Pause Button");
+    this.playPauseButton = new JButton("Play/Pause");
+    this.playPauseButton.setActionCommand("PlayPause Button");
+//    this.pauseButton = new JButton("Pause");
+//    this.pauseButton.setActionCommand("Pause Button");
     this.restartButton = new JButton("Restart");
     this.restartButton.setActionCommand("Restart Button");
     this.loopButton = new JToggleButton("Loop", false);
@@ -74,8 +72,8 @@ public class EditView extends JFrame implements AnimationView {
 
     this.setLayout(new FlowLayout());
 
-    this.add(playButton);
-    this.add(pauseButton);
+    this.add(playPauseButton);
+//    this.add(pauseButton);
     this.add(restartButton);
     this.add(loopButton);
     this.add(incSpeedButton);
@@ -87,8 +85,8 @@ public class EditView extends JFrame implements AnimationView {
 
   @Override
   public void addActionListener(ActionListener listener) {
-    this.playButton.addActionListener(listener);
-    this.pauseButton.addActionListener(listener);
+    this.playPauseButton.addActionListener(listener);
+//    this.pauseButton.addActionListener(listener);
     this.restartButton.addActionListener(listener);
     this.loopButton.addActionListener(listener);
     this.incSpeedButton.addActionListener(listener);
@@ -96,8 +94,8 @@ public class EditView extends JFrame implements AnimationView {
   }
 
   @Override
-  public boolean isTimeable() {
-    return true;
+  public ViewType getViewType() {
+    return ViewType.Edit;
   }
 
   @Override

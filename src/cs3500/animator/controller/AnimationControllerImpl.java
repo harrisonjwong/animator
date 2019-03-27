@@ -4,6 +4,7 @@ import cs3500.animator.model.AnimationModel;
 import cs3500.animator.model.motions.info.ShapeInfo;
 import cs3500.animator.model.shapes.Shape;
 import cs3500.animator.view.AnimationView;
+import cs3500.animator.view.AnimationView.ViewType;
 import cs3500.animator.view.ButtonListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class AnimationControllerImpl implements AnimationController {
 
   //specifically for edit view
   private boolean loopOn;
+  private boolean playing;
 
   /**
    * TODO
@@ -40,8 +42,9 @@ public class AnimationControllerImpl implements AnimationController {
     this.timer = null;
     this.tick = 0;
     this.loopOn = false;
+    this.playing = true;
 
-    if (view.isTimeable()) {
+    if (view.getViewType() == ViewType.Edit) {
       this.configureButtonListener();
     }
   }
@@ -49,7 +52,8 @@ public class AnimationControllerImpl implements AnimationController {
   @Override
   public void start() {
     view.makeVisible();
-    if (view.isTimeable()) {
+    ViewType viewType = view.getViewType();
+    if (viewType == ViewType.Edit || viewType == ViewType.Visual) {
       int delay = 1000 / speed;
 
       this.timer = new Timer(delay, ((ActionEvent e) -> {
@@ -88,12 +92,8 @@ public class AnimationControllerImpl implements AnimationController {
     Map<String, Runnable> buttonClickedMap = new HashMap<>();
     ButtonListener buttonListener = new ButtonListener();
 
-    buttonClickedMap.put("Play Button", () -> {
-      timer.start();
-      view.resetFocus();
-    });
-    buttonClickedMap.put("Pause Button", () -> {
-      timer.stop();
+    buttonClickedMap.put("PlayPause Button", () -> {
+      playPause();
       view.resetFocus();
     });
     buttonClickedMap.put("Restart Button", () -> {
@@ -125,6 +125,7 @@ public class AnimationControllerImpl implements AnimationController {
     timer.stop();
     tick = 0;
     timer.restart();
+    this.playing = true;
   }
 
   private void toggleLooping() {
@@ -142,6 +143,15 @@ public class AnimationControllerImpl implements AnimationController {
     }
     int delay = 1000 / this.speed;
     this.timer.setDelay(delay);
+  }
+
+  private void playPause() {
+    if (playing) {
+      timer.stop();
+    } else {
+      timer.start();
+    }
+    playing = !playing;
   }
 
 

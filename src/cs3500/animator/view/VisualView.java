@@ -67,7 +67,6 @@ public class VisualView extends JFrame implements AnimationView {
   @Override
   public void makeVisible() {
     this.setVisible(true);
-//    this.timer.start();
   }
 
   @Override
@@ -83,12 +82,12 @@ public class VisualView extends JFrame implements AnimationView {
 
   @Override
   public void addActionListener(ActionListener listener) {
-//    throw new UnsupportedOperationException("no need to add action listener to visual view");
+    throw new UnsupportedOperationException("no need to add action listener to visual view");
   }
 
   @Override
-  public boolean isTimeable() {
-    return true;
+  public ViewType getViewType() {
+    return ViewType.Visual;
   }
 
   @Override

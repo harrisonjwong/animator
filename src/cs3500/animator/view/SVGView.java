@@ -243,4 +243,9 @@ public class SVGView extends AbstractTextualView {//{ AnimationView {
     this.ap.append("</").append(pair.getValue().getSVGType()).append(">").append("\n");
   }
 
+  @Override
+  public ViewType getViewType() {
+    return ViewType.SVG;
+  }
+
 }

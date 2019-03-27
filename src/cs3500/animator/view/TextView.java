@@ -80,4 +80,9 @@ public class TextView extends AbstractTextualView {
         .append(finishInfo.getColor().toString()).append("\n");
   }
 
+  @Override
+  public ViewType getViewType() {
+    return ViewType.Text;
+  }
+
 }

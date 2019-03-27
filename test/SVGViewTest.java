@@ -10,6 +10,8 @@ import cs3500.animator.model.types.Position2D;
 import cs3500.animator.model.types.ShapeSize;
 import cs3500.animator.util.BadAppendable;
 import cs3500.animator.view.AnimationView;
+import cs3500.animator.view.AnimationView.ViewType;
+import cs3500.animator.view.ButtonListener;
 import cs3500.animator.view.SVGView;
 import org.junit.Test;
 
@@ -434,6 +436,66 @@ public class SVGViewTest {
         + "attributeName=\"visibility\" from=\"hidden\" to=\"hidden\" fill=\"freeze\" />\n"
         + "</ellipse>\n"
         + "</svg>", sb.toString());
+  }
+
+  @Test
+  public void viewType() {
+    AnimationModel m = new AnimationModelImpl();
+    StringBuilder sb = new StringBuilder();
+    AnimationView view = new SVGView(m, 20, sb);
+    assertEquals(ViewType.SVG, view.getViewType());
+  }
+
+  @Test
+  public void refreshError() {
+    try {
+      AnimationModel m = new AnimationModelImpl();
+      StringBuilder sb = new StringBuilder();
+      AnimationView view = new SVGView(m, 20, sb);
+      view.refresh();
+      fail("exception not thrown");
+    } catch (UnsupportedOperationException e) {
+      assertEquals("can't refresh textual views", e.getMessage());
+    }
+  }
+
+  @Test
+  public void resetFocusError() {
+    try {
+      AnimationModel m = new AnimationModelImpl();
+      StringBuilder sb = new StringBuilder();
+      AnimationView view = new SVGView(m, 20, sb);
+      view.resetFocus();
+      fail("exception not thrown");
+    } catch (UnsupportedOperationException e) {
+      assertEquals("can't reset focus on textual views", e.getMessage());
+    }
+  }
+
+  @Test
+  public void actionListenerError() {
+    try {
+      AnimationModel m = new AnimationModelImpl();
+      StringBuilder sb = new StringBuilder();
+      AnimationView view = new SVGView(m, 20, sb);
+      view.addActionListener(new ButtonListener());
+      fail("exception not thrown");
+    } catch (UnsupportedOperationException e) {
+      assertEquals("can't add action listeners to textual views", e.getMessage());
+    }
+  }
+
+  @Test
+  public void getPanelError() {
+    try {
+      AnimationModel m = new AnimationModelImpl();
+      StringBuilder sb = new StringBuilder();
+      AnimationView view = new SVGView(m, 20, sb);
+      view.getPanel();
+      fail("exception not thrown");
+    } catch (UnsupportedOperationException e) {
+      assertEquals("can't get panel from textual views", e.getMessage());
+    }
   }
 
 

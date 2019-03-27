@@ -10,6 +10,8 @@ import cs3500.animator.model.types.Position2D;
 import cs3500.animator.model.types.ShapeSize;
 import cs3500.animator.util.BadAppendable;
 import cs3500.animator.view.AnimationView;
+import cs3500.animator.view.AnimationView.ViewType;
+import cs3500.animator.view.ButtonListener;
 import cs3500.animator.view.TextView;
 import org.junit.Before;
 import org.junit.Test;
@@ -177,6 +179,78 @@ public class TextViewTest {
       fail("exception not thrown");
     } catch (IllegalArgumentException e) {
       assertEquals("appending error", e.getMessage());
+    }
+  }
+
+    /*
+    @Override
+  public void refresh() {
+    throw new UnsupportedOperationException("can't refresh textual views");
+  }
+
+  @Override
+  public void resetFocus() {
+    throw new UnsupportedOperationException("can't reset focus on textual views");
+  }
+
+  @Override
+  public void addActionListener(ActionListener listener) {
+    throw new UnsupportedOperationException("can't add action listeners to textual views");
+  }
+
+  @Override
+  public boolean isTimeable() {
+    return false;
+  }
+
+  @Override
+  public AnimationPanel getPanel() {
+    throw new UnsupportedOperationException("can't get panel from textual views");
+  }
+   */
+
+  @Test
+  public void viewType() {
+    assertEquals(ViewType.Text, view.getViewType());
+  }
+
+  @Test
+  public void refreshError() {
+    try {
+      view.refresh();
+      fail("exception not thrown");
+    } catch (UnsupportedOperationException e) {
+      assertEquals("can't refresh textual views", e.getMessage());
+    }
+  }
+
+  @Test
+  public void resetFocusError() {
+    try {
+      view.resetFocus();
+      fail("exception not thrown");
+    } catch (UnsupportedOperationException e) {
+      assertEquals("can't reset focus on textual views", e.getMessage());
+    }
+  }
+
+  @Test
+  public void actionListenerError() {
+    try {
+      view.addActionListener(new ButtonListener());
+      fail("exception not thrown");
+    } catch (UnsupportedOperationException e) {
+      assertEquals("can't add action listeners to textual views", e.getMessage());
+    }
+  }
+
+  @Test
+  public void getPanelError() {
+    try {
+      view.getPanel();
+      fail("exception not thrown");
+    } catch (UnsupportedOperationException e) {
+      assertEquals("can't get panel from textual views", e.getMessage());
     }
   }
 

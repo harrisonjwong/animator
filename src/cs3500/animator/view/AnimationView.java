@@ -26,8 +26,12 @@ public interface AnimationView {
 
   void addActionListener(ActionListener listener);
 
-  boolean isTimeable();
+  ViewType getViewType();
 
   AnimationPanel getPanel();
+
+  enum ViewType {
+    Text, SVG, Edit, Visual
+  }
 
 }

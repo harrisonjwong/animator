@@ -20,11 +20,6 @@ abstract class AbstractTextualView implements AnimationView {
   }
 
   @Override
-  public boolean isTimeable() {
-    return false;
-  }
-
-  @Override
   public AnimationPanel getPanel() {
     throw new UnsupportedOperationException("can't get panel from textual views");
   }
