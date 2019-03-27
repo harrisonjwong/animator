@@ -15,7 +15,7 @@ import java.util.Map;
  * The SVGView produces the Scalable Vector Graphics code necessary to display the animation.
  * It contains each shape and the motions that that shapes does, formatted in xml format.
  */
-public class SVGView implements AnimationView {
+public class SVGView extends AbstractTextualView {//{ AnimationView {
 
   /**
    * The model with which to create the svg output.
@@ -243,8 +243,4 @@ public class SVGView implements AnimationView {
     this.ap.append("</").append(pair.getValue().getSVGType()).append(">").append("\n");
   }
 
-  @Override
-  public void refresh() {
-    throw new UnsupportedOperationException("cannot refresh a svg view");
-  }
 }

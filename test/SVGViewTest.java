@@ -87,7 +87,7 @@ public class SVGViewTest {
       view.refresh();
       fail("exception not thrown");
     } catch (UnsupportedOperationException e) {
-      assertEquals("cannot refresh a svg view", e.getMessage());
+      assertEquals("can't refresh textual views", e.getMessage());
     }
   }
 

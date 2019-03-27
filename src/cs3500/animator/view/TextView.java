@@ -12,7 +12,7 @@ import java.util.Map;
  * The TextView shows a textual description of an animation. It creates a textual representation
  * which has each shape listed by its name and each motion of that shape listed by the shape name.
  */
-public class TextView implements AnimationView {
+public class TextView extends AbstractTextualView {
 
   /**
    * The model with which to create TextView.
@@ -80,8 +80,4 @@ public class TextView implements AnimationView {
         .append(finishInfo.getColor().toString()).append("\n");
   }
 
-  @Override
-  public void refresh() {
-    throw new UnsupportedOperationException("cannot refresh a text view");
-  }
 }

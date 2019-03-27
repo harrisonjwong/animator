@@ -6,9 +6,11 @@ import cs3500.animator.model.shapes.Shape;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.Timer;
@@ -21,8 +23,7 @@ public class VisualView extends JFrame implements AnimationView {
 
   private ReadOnlyAnimationModel model;
   private AnimationPanel panel;
-  private Timer timer;
-  private int tick;
+  private JScrollPane pane;
 
   /**
    * Constructs a visual view given an animation model and ticks per second.
@@ -39,38 +40,9 @@ public class VisualView extends JFrame implements AnimationView {
       throw new IllegalArgumentException("ticks per second must be greater than 0");
     }
     this.model = model;
-    this.tick = 0;
-
-    int delay = 1000 / tps;
 
     setupView();
 
-    timer = new Timer(delay, ((ActionEvent e) -> {
-      List<ShapeInfo> infos = new ArrayList<>();
-      List<String> types = new ArrayList<>();
-
-      HashMap<String, Shape> shapes = model.getShapes();
-      for (String s : shapes.keySet()) {
-        ShapeInfo curinfo = model.shapeInfoAtTime(s, tick);
-        String type = shapes.get(s).getType();
-        infos.add(curinfo);
-        types.add(type);
-      }
-      panel.setInfos(infos);
-      panel.setTypes(types);
-
-      refresh();
-      if (this.tick >= model.getEndingTick()) {
-        timer.stop();
-        System.exit(0);
-      } else {
-        this.tick++;
-      }
-
-    }));
-    timer.start();
-
-    panel.setPreferredSize(new Dimension(model.getWindowWidth(), model.getWindowHeight()));
     this.pack();
   }
 
@@ -78,18 +50,24 @@ public class VisualView extends JFrame implements AnimationView {
     this.setTitle("Animation");
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setLocation(model.getWindowX(), model.getWindowY());
-    this.setLayout(new BorderLayout());
+//    this.setLayout(new BorderLayout());
 
     panel = new AnimationPanel();
     panel.setPreferredSize(new Dimension(model.getWindowWidth(), model.getWindowHeight()));
-    JScrollPane pane = new JScrollPane(panel);
+//    this.add(panel);
+    pane = new JScrollPane(panel);
+    pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+    pane.setPreferredSize(new Dimension(model.getWindowWidth(), model.getWindowHeight()));
     this.add(pane, BorderLayout.CENTER);
+
 
   }
 
   @Override
   public void makeVisible() {
     this.setVisible(true);
+//    this.timer.start();
   }
 
   @Override
@@ -97,6 +75,25 @@ public class VisualView extends JFrame implements AnimationView {
     this.repaint();
   }
 
+  @Override
+  public void resetFocus() {
+    this.setFocusable(true);
+    this.requestFocus();
+  }
 
+  @Override
+  public void addActionListener(ActionListener listener) {
+//    throw new UnsupportedOperationException("no need to add action listener to visual view");
+  }
+
+  @Override
+  public boolean isTimeable() {
+    return true;
+  }
+
+  @Override
+  public AnimationPanel getPanel() {
+    return this.panel;
+  }
 
 }

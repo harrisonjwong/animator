@@ -1,6 +1,7 @@
 package cs3500.animator.model;
 
 import cs3500.animator.model.motions.Motion;
+import cs3500.animator.model.motions.info.ShapeInfo;
 import cs3500.animator.model.shapes.Shape;
 
 /**
@@ -31,5 +32,7 @@ public interface AnimationModel extends ReadOnlyAnimationModel {
    * @return the animation formatted as text
    */
   String animationAsText();
+
+  void addKeyframe(String s, int time, ShapeInfo info);
 
 }

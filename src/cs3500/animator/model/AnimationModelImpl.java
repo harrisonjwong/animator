@@ -167,6 +167,21 @@ public class AnimationModelImpl implements AnimationModel {
     return this.windowHeight;
   }
 
+  @Override
+  public void addKeyframe(String s, int time, ShapeInfo info) {
+    if (s == null) {
+      throw new IllegalArgumentException("given name is null");
+    }
+    if (info == null) {
+      throw new IllegalArgumentException("given info is null");
+    }
+    Shape shape = shapes.get(s);
+    if (shape == null) {
+      throw new IllegalArgumentException("the given name does not have a matching shape");
+    }
+//    shape.addKeyframe(time, info);
+  }
+
   /**
    * Embedded builder class that constructs an instance of an AnimationModel based on steps.
    */

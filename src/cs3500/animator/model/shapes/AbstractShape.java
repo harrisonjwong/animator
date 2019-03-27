@@ -137,5 +137,4 @@ abstract class AbstractShape implements Shape {
     return new ShapeInfoImpl(newPos, newSize, newColor);
 
   }
-
 }

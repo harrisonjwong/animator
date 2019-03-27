@@ -1,5 +1,8 @@
 package cs3500.animator;
 
+import cs3500.animator.controller.AnimationController;
+import cs3500.animator.controller.AnimationControllerImpl;
+import cs3500.animator.model.AnimationModelImpl;
 import cs3500.animator.util.AnimationFactory;
 import cs3500.animator.view.AnimationView;
 import java.io.FileNotFoundException;
@@ -23,8 +26,10 @@ public final class Excellence {
    */
   public static void main(String[] args) {
     try {
-      AnimationView view = AnimationFactory.get(args);
-      view.makeVisible();
+      AnimationFactory factory = new AnimationFactory(args);
+      AnimationController controller = new AnimationControllerImpl(
+          factory.getView(), factory.getModel(), factory.getSpeed());
+      controller.start();
     } catch (FileNotFoundException e) {
       throw new IllegalArgumentException("invalid file");
     }

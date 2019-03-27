@@ -64,7 +64,7 @@ public class TextViewTest {
       view.refresh();
       fail("exception not thrown");
     } catch (UnsupportedOperationException e) {
-      assertEquals("cannot refresh a text view", e.getMessage());
+      assertEquals("can't refresh textual views", e.getMessage());
     }
   }
 
