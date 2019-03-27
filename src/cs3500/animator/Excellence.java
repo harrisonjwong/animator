@@ -2,9 +2,7 @@ package cs3500.animator;
 
 import cs3500.animator.controller.AnimationController;
 import cs3500.animator.controller.AnimationControllerImpl;
-import cs3500.animator.model.AnimationModelImpl;
 import cs3500.animator.util.AnimationFactory;
-import cs3500.animator.view.AnimationView;
 import java.io.FileNotFoundException;
 
 /**

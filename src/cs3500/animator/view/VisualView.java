@@ -43,11 +43,9 @@ public class VisualView extends JFrame implements AnimationView {
     this.setTitle("Animation");
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setLocation(model.getWindowX(), model.getWindowY());
-//    this.setLayout(new BorderLayout());
 
     panel = new AnimationPanel();
     panel.setPreferredSize(new Dimension(model.getWindowWidth(), model.getWindowHeight()));
-//    this.add(panel);
     pane = new JScrollPane(panel);
     pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);

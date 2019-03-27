@@ -93,12 +93,13 @@ abstract class AbstractShape implements Shape {
             m.getStartInfo(), m.getFinishInfo());
       }
     }
-//    if (motions.isEmpty()) {
-//      throw new IllegalArgumentException("this shape has no info at the given time");
-//    } else {
-      return new ShapeInfoImpl(new Position2D(0, 0),
-          new ShapeSize(0, 0), new Color(0, 0, 0));
-//    }
+    if (motions.isEmpty()) {
+      if (tick == soloKeyframeTime && soloKeyframeInfo != null) {
+        return soloKeyframeInfo;
+      }
+    }
+    return new ShapeInfoImpl(new Position2D(0, 0),
+        new ShapeSize(0, 0), new Color(0, 0, 0));
   }
 
   @Override

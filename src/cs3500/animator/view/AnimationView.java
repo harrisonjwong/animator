@@ -38,9 +38,9 @@ public interface AnimationView {
   void addActionListener(ActionListener listener);
 
   /**
-   * Gets the {@link ViewType} of the given animation view. Unfortunately necessary so that the controller
-   * can respond appropriately to the type of view it has (ex: visual and edit views need timing,
-   * while the text and svg views don't).
+   * Gets the {@link ViewType} of the given animation view. Unfortunately necessary so that
+   * the controller can respond appropriately to the type of view it has
+   * (ex: visual and edit views need timing, while the text and svg views don't).
    * @return the {@link ViewType} representing the view
    */
   ViewType getViewType();

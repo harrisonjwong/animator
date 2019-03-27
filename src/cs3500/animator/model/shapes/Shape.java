@@ -39,6 +39,7 @@ public interface Shape {
    * @return the type of this shape
    */
   String getType();
+
   /**
    * Gets the type of this shape as an SVG shape type.
    *

@@ -457,4 +457,35 @@ public class AnimationModelKeyframeTests {
             + "motion R 20 200 200 50 100 255 0 0 30 200 200 50 100 255 0 0\n",
         model.animationAsText());
   }
+
+  @Test
+  public void addKeyframeMid() {
+    AnimationModel m = new AnimationModelImpl();
+    m.addShape(new Rectangle("R"));
+    ShapeInfo info1 = new ShapeInfoImpl(new Position2D(200, 200), new ShapeSize(50, 100),
+        new Color(255, 0, 0));
+    m.addAnimation("R", new MotionImpl(0, 20, info1, info1));
+    ShapeInfo info2 = new ShapeInfoImpl(new Position2D(300, 300), new ShapeSize(50, 100),
+        new Color(255, 0, 0));
+    ShapeInfo info3 = new ShapeInfoImpl(new Position2D(200, 200), new ShapeSize(100, 100),
+        new Color(255, 0, 0));
+    m.addAnimation("R", new MotionImpl(20, 25, info1, info2));
+    m.addKeyframe("R", 10);
+    m.editKeyframe("R", 10, info3);
+    assertEquals("canvas 0 0 500 500\n" + "shape R rectangle\n"
+        + "motion R 0 200 200 50 100 255 0 0 10 200 200 100 100 255 0 0\n"
+        + "motion R 10 200 200 100 100 255 0 0 20 200 200 50 100 255 0 0\n"
+        + "motion R 20 200 200 50 100 255 0 0 25 300 300 50 100 255 0 0\n", m.animationAsText());
+  }
+
+  @Test
+  public void addKeyframeNone() {
+    AnimationModel m = new AnimationModelImpl();
+    m.addShape(new Rectangle("R"));
+    ShapeInfo info1 = new ShapeInfoImpl(new Position2D(200, 200), new ShapeSize(50, 100),
+        new Color(255, 0, 0));
+    m.addKeyframe("R", 10);
+    assertEquals("canvas 0 0 500 500\n" + "shape R rectangle\n", m.animationAsText());
+  }
+
 }

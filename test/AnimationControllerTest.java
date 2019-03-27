@@ -18,10 +18,9 @@ import cs3500.animator.view.VisualView;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 /**
- * Tests for AnimationController
+ * Tests for the AnimationController.
  */
 public class AnimationControllerTest {
 

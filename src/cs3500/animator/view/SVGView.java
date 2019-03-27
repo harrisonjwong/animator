@@ -15,7 +15,7 @@ import java.util.Map;
  * The SVGView produces the Scalable Vector Graphics code necessary to display the animation.
  * It contains each shape and the motions that that shapes does, formatted in xml format.
  */
-public class SVGView extends AbstractTextualView {//{ AnimationView {
+public class SVGView extends AbstractTextualView {
 
   /**
    * The model with which to create the svg output.
