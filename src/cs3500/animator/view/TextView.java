@@ -1,5 +1,6 @@
 package cs3500.animator.view;
 
+import cs3500.animator.model.AnimationModel;
 import cs3500.animator.model.ReadOnlyAnimationModel;
 import cs3500.animator.model.motions.Motion;
 import cs3500.animator.model.motions.info.ShapeInfo;
@@ -83,6 +84,14 @@ public class TextView extends AbstractTextualView {
   @Override
   public ViewType getViewType() {
     return ViewType.Text;
+  }
+
+  @Override
+  public boolean sameModel(AnimationModel m) {
+    if (m == null) {
+      throw new IllegalArgumentException("the given model is null");
+    }
+    return m == this.model;
   }
 
 }

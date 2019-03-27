@@ -14,7 +14,9 @@ import java.util.Map;
 import javax.swing.Timer;
 
 /**
- * TODO
+ * An AnimationControllerImpl contains an AnimationModel and AnimationView. It can control
+ * the timing of a visual animation and responds to user inputs of an editing animation. It can
+ * also be used to create SVG and textual views.
  */
 public class AnimationControllerImpl implements AnimationController {
 
@@ -31,10 +33,26 @@ public class AnimationControllerImpl implements AnimationController {
   private boolean playing;
 
   /**
-   * TODO
-   * @param view
+   * Constructs an AnimationController given a view, model, and speed of animation.
+   * @param view the {@link AnimationView} to display on
+   * @param model the {@link AnimationModel} that contains the data
+   * @param speed the speed of the animation for visuals
+   * @throws IllegalArgumentException if the view or model are null or the speed is
+   *         less than or equal 0
+   * @throws IllegalStateException if the model contained in the view is different from the model
+   *         passed into the controller
    */
   public AnimationControllerImpl(AnimationView view, AnimationModel model, int speed) {
+    if (view == null || model == null) {
+      throw new IllegalArgumentException("given view or model is null");
+    }
+    if (speed <= 0) {
+      throw new IllegalArgumentException("speed must be greater than 0");
+    }
+    if (!view.sameModel(model)) {
+      throw new IllegalStateException("the model in the view and the model in the controller"
+          + "must be the same view");
+    }
     this.view = view;
     this.model = model;
     this.speed = speed;
@@ -49,6 +67,10 @@ public class AnimationControllerImpl implements AnimationController {
     }
   }
 
+  /**
+   * Makes the view visible. If it's a visual or editing view, then the timer controlling
+   * the animation is created and started here.
+   */
   @Override
   public void start() {
     view.makeVisible();
@@ -88,6 +110,9 @@ public class AnimationControllerImpl implements AnimationController {
     }
   }
 
+  /**
+   * Creates the (String,Runnable) map with ActionEvents for each button in the editing view.
+   */
   private void configureButtonListener() {
     Map<String, Runnable> buttonClickedMap = new HashMap<>();
     ButtonListener buttonListener = new ButtonListener();
@@ -121,6 +146,9 @@ public class AnimationControllerImpl implements AnimationController {
     this.view.addActionListener(buttonListener);
   }
 
+  /**
+   * Restarts the animation in the editing view.
+   */
   private void restart() {
     timer.stop();
     tick = 0;
@@ -128,10 +156,17 @@ public class AnimationControllerImpl implements AnimationController {
     this.playing = true;
   }
 
+  /**
+   * Turns looping in the editing view on or off.
+   */
   private void toggleLooping() {
     loopOn = !loopOn;
   }
 
+  /**
+   * Changes the speed in the editing view based on the given boolean.
+   * @param increase boolean representing whether to increase (true) or decrease (false) speed
+   */
   private void changeSpeed(boolean increase) {
     if (increase) {
       this.speed += 2;
@@ -145,6 +180,9 @@ public class AnimationControllerImpl implements AnimationController {
     this.timer.setDelay(delay);
   }
 
+  /**
+   * Plays or pauses the animation in the editing view.
+   */
   private void playPause() {
     if (playing) {
       timer.stop();

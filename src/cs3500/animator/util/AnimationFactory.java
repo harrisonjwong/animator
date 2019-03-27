@@ -32,7 +32,6 @@ public class AnimationFactory {
    * -speed (int), which tells the speed of the animation in ticks per second (used for
    *               visual view and svg view--defaults to 1 tps)
    * @param args the command arguments
-   * @return the AnimationView based on the command arguments
    * @throws FileNotFoundException if the file in the -in argument is not found
    * @throws IllegalArgumentException if the arguments are invalid
    */
@@ -63,14 +62,14 @@ public class AnimationFactory {
 
   /**
    * Gets the speed of this animation.
-   * @return
+   * @return the integer speed of this animation
    */
   public int getSpeed() {
     return this.speed;
   }
 
   /**
-   * Gets the model of this animation
+   * Gets the model for this animation.
    * @return the {@link AnimationModel} of this animation
    */
   public AnimationModel getModel() {
@@ -85,6 +84,9 @@ public class AnimationFactory {
     return this.view;
   }
 
+  /**
+   * Looks for the given program argument and returns it if it's there, otherwise exception.
+   */
   private String lookForRequired(String thing, String[] args) {
     int index;
     try {
@@ -98,6 +100,9 @@ public class AnimationFactory {
     }
   }
 
+  /**
+   * Looks for a location following -out to output to. Otherwise uses System.out.
+   */
   private Appendable lookForOutLocation(String[] args) {
     int index;
     try {
@@ -111,6 +116,9 @@ public class AnimationFactory {
     }
   }
 
+  /**
+   * Looks for an integer speed following -speed to be used in the application. Otherwise uses 1.
+   */
   private int lookForSpeed(String[] args) {
     int index;
     try {

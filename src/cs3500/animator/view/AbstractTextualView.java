@@ -2,6 +2,11 @@ package cs3500.animator.view;
 
 import java.awt.event.ActionListener;
 
+/**
+ * Abstract class for the views that output text. Used to throw common
+ * UnsupportedOperationExceptions for all of the methods on AnimationView that do not work with
+ * textual outputting views.
+ */
 abstract class AbstractTextualView implements AnimationView {
 
   @Override

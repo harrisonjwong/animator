@@ -1,29 +1,28 @@
 package cs3500.animator.view;
 
+import cs3500.animator.model.AnimationModel;
 import cs3500.animator.model.ReadOnlyAnimationModel;
-import cs3500.animator.model.motions.info.ShapeInfo;
-import cs3500.animator.model.shapes.Shape;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
-import javax.swing.Timer;
 
+/**
+ * The EditView is an AnimationView that allows advanced control over an animation.
+ * It allows playback controls, including playing, pausing, restarting, changing the speed, and
+ * looping. It also allows editing controls, including adding and deleting new shapes as well as
+ * adding, editing, and deleting keyframes on those shapes.
+ */
 public class EditView extends JFrame implements AnimationView {
 
   private ReadOnlyAnimationModel model;
   private AnimationPanel panel;
   private JScrollPane pane;
   private JButton playPauseButton;
-//  private JButton pauseButton;
   private JButton restartButton;
   private JToggleButton loopButton;
   private JButton incSpeedButton;
@@ -59,8 +58,6 @@ public class EditView extends JFrame implements AnimationView {
 
     this.playPauseButton = new JButton("Play/Pause");
     this.playPauseButton.setActionCommand("PlayPause Button");
-//    this.pauseButton = new JButton("Pause");
-//    this.pauseButton.setActionCommand("Pause Button");
     this.restartButton = new JButton("Restart");
     this.restartButton.setActionCommand("Restart Button");
     this.loopButton = new JToggleButton("Loop", false);
@@ -73,7 +70,6 @@ public class EditView extends JFrame implements AnimationView {
     this.setLayout(new FlowLayout());
 
     this.add(playPauseButton);
-//    this.add(pauseButton);
     this.add(restartButton);
     this.add(loopButton);
     this.add(incSpeedButton);
@@ -85,8 +81,10 @@ public class EditView extends JFrame implements AnimationView {
 
   @Override
   public void addActionListener(ActionListener listener) {
+    if (listener == null) {
+      throw new IllegalArgumentException("the given listener is null");
+    }
     this.playPauseButton.addActionListener(listener);
-//    this.pauseButton.addActionListener(listener);
     this.restartButton.addActionListener(listener);
     this.loopButton.addActionListener(listener);
     this.incSpeedButton.addActionListener(listener);
@@ -117,5 +115,13 @@ public class EditView extends JFrame implements AnimationView {
   public void resetFocus() {
     this.setFocusable(true);
     this.requestFocus();
+  }
+
+  @Override
+  public boolean sameModel(AnimationModel m) {
+    if (m == null) {
+      throw new IllegalArgumentException("the given model is null");
+    }
+    return m == this.model;
   }
 }

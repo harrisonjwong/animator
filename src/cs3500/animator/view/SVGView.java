@@ -248,4 +248,12 @@ public class SVGView extends AbstractTextualView {//{ AnimationView {
     return ViewType.SVG;
   }
 
+  @Override
+  public boolean sameModel(AnimationModel m) {
+    if (m == null) {
+      throw new IllegalArgumentException("the given model is null");
+    }
+    return m == this.model;
+  }
+
 }

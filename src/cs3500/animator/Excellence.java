@@ -16,7 +16,7 @@ public final class Excellence {
   /**
    * Main method for the Excellence program.
    * @param args command arguments that tells what the animation should do, including
-   *        -view (text, visual, svg), which tells which view should be displayed (required);
+   *        -view (text, visual, svg, edit), which tells which view should be displayed (required);
    *        -in (*file name*), which tells what file should be displayed on the screen (required);
    *        -out (*file name*), which tells where the text should be outputted (used for
    *                            svg view and text view--default to System.out)

@@ -1,19 +1,12 @@
 package cs3500.animator.view;
 
+import cs3500.animator.model.AnimationModel;
 import cs3500.animator.model.ReadOnlyAnimationModel;
-import cs3500.animator.model.motions.info.ShapeInfo;
-import cs3500.animator.model.shapes.Shape;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
-import javax.swing.Timer;
 
 /**
  * Represents the visual view, which shows a Java Swing version of the animation. It creates a
@@ -93,6 +86,14 @@ public class VisualView extends JFrame implements AnimationView {
   @Override
   public AnimationPanel getPanel() {
     return this.panel;
+  }
+
+  @Override
+  public boolean sameModel(AnimationModel m) {
+    if (m == null) {
+      throw new IllegalArgumentException("the given model is null");
+    }
+    return m == this.model;
   }
 
 }
