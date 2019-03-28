@@ -65,7 +65,7 @@ public class AnimationModelKeyframeTests {
     String firstMsg = model.addKeyframe("R", 0);
     assertEquals("keyframe successfully added for shape R at time 0", firstMsg);
     String secondMsg = model.addKeyframe("R", 10);
-    assertEquals("error: must add keyframe information for shape R at time 0 first", secondMsg);
+    assertEquals("error: must edit keyframe information for shape R at time 0 first", secondMsg);
     assertEquals("canvas 0 0 500 500\n"
         + "shape R rectangle\n", model.animationAsText());
   }

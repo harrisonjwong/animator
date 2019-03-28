@@ -1,5 +1,6 @@
 package cs3500.animator.view;
 
+import cs3500.animator.model.AnimationModel;
 import java.awt.event.ActionListener;
 
 /**
@@ -32,5 +33,10 @@ abstract class AbstractTextualView implements AnimationView {
   @Override
   public void setTickLabel(int speed, int tps) {
     throw new UnsupportedOperationException("can't set label for textual views");
+  }
+
+  @Override
+  public void setModel(AnimationModel model) {
+    throw new UnsupportedOperationException("can't set model for textual views");
   }
 }

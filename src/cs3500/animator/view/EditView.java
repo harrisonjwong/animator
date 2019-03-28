@@ -2,15 +2,22 @@ package cs3500.animator.view;
 
 import cs3500.animator.model.AnimationModel;
 import cs3500.animator.model.ReadOnlyAnimationModel;
+import cs3500.animator.model.shapes.Shape;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
+import javax.swing.ListSelectionModel;
 
 /**
  * The EditView is an AnimationView that allows advanced control over an animation.
@@ -34,11 +41,16 @@ public class EditView extends JFrame implements AnimationView {
   private JButton addKeyframeButton;
   private JButton editKeyframeButton;
   private JButton removeKeyframeButton;
+  private JButton saveButton;
+  private JButton loadButton;
 
   private JLabel tickLabel;
 
   private JPanel topButtonPanel;
   private JPanel bottomButtonPanel;
+  private JPanel selectionListPanel;
+
+  private JList<String> listOfStrings;
 
   /**
    * Constructs an edit view given an animation model and ticks per second.
@@ -105,6 +117,10 @@ public class EditView extends JFrame implements AnimationView {
     this.editKeyframeButton.setActionCommand("Edit Keyframe Button");
     this.removeKeyframeButton = new JButton("Remove Keyframe");
     this.removeKeyframeButton.setActionCommand("Remove Keyframe Button");
+    this.saveButton = new JButton("Save");
+    this.saveButton.setActionCommand("Save Button");
+    this.loadButton = new JButton("Load");
+    this.loadButton.setActionCommand("Load Button");
 
 
     this.bottomButtonPanel = new JPanel();
@@ -113,9 +129,22 @@ public class EditView extends JFrame implements AnimationView {
     this.bottomButtonPanel.add(addKeyframeButton);
     this.bottomButtonPanel.add(editKeyframeButton);
     this.bottomButtonPanel.add(removeKeyframeButton);
+    this.bottomButtonPanel.add(saveButton);
+    this.bottomButtonPanel.add(loadButton);
     this.add(bottomButtonPanel, BorderLayout.SOUTH);
 
+    selectionListPanel = new JPanel();
+    selectionListPanel.setBorder(BorderFactory.createTitledBorder("Shapes"));
 
+    JScrollPane shapesScrollPane = new JScrollPane(selectionListPanel);
+    this.add(shapesScrollPane, BorderLayout.EAST);
+
+    DefaultListModel<String> shapeNames = new DefaultListModel<>();
+    model.getShapes().keySet().forEach( (s) -> shapeNames.addElement(s));
+    listOfStrings = new JList<>(shapeNames);
+    listOfStrings.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+    selectionListPanel.add(listOfStrings);
     pane.setPreferredSize(new Dimension(700, 700));
     this.pack();
   }
@@ -135,6 +164,8 @@ public class EditView extends JFrame implements AnimationView {
     this.addKeyframeButton.addActionListener(listener);
     this.editKeyframeButton.addActionListener(listener);
     this.removeKeyframeButton.addActionListener(listener);
+    this.saveButton.addActionListener(listener);
+    this.loadButton.addActionListener(listener);
   }
 
   @Override
@@ -154,7 +185,25 @@ public class EditView extends JFrame implements AnimationView {
 
   @Override
   public void refresh() {
+    updateShapesBar();
     this.repaint();
+  }
+
+  private void updateShapesBar() {
+    selectionListPanel.remove(listOfStrings);
+    DefaultListModel<String> shapeNames = new DefaultListModel<>();
+    model.getShapes().keySet().forEach( (s) -> shapeNames.addElement(s));
+    listOfStrings = new JList<>(shapeNames);
+    selectionListPanel.add(listOfStrings);
+    listOfStrings.addListSelectionListener( (s) -> {
+      String name = listOfStrings.getSelectedValue();
+      Shape shape = model.getShapes().get(name);
+      if (shape != null) {
+        JOptionPane.showMessageDialog(null,
+            "shape " + name + " has keyframes at times " +
+                Arrays.toString(shape.getKeyframeTimes()));
+      }
+    });
   }
 
   @Override
@@ -174,5 +223,16 @@ public class EditView extends JFrame implements AnimationView {
       throw new IllegalArgumentException("the given model is null");
     }
     return m == this.model;
+  }
+
+  @Override
+  public void setModel(AnimationModel model) {
+    if (model == null) {
+      throw new IllegalArgumentException("the given model is null");
+    }
+    this.model = model;
+    panel.setPreferredSize(new Dimension(model.getWindowWidth(), model.getWindowHeight()));
+    pane.setPreferredSize(new Dimension(model.getWindowWidth(), model.getWindowHeight()));
+
   }
 }

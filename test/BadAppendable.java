@@ -1,5 +1,3 @@
-package cs3500.animator.util;
-
 import java.io.IOException;
 
 /**

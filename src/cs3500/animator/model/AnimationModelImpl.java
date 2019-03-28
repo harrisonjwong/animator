@@ -116,6 +116,27 @@ public class AnimationModelImpl implements AnimationModel {
   }
 
   @Override
+  public String addShape(String name, String type) {
+    if (name == null || type == null) {
+      throw new IllegalArgumentException("one or more of the inputs are null");
+    }
+    if (shapes.containsKey(name)) {
+      return "the given shape name already exists";
+    } else {
+      switch (type) {
+        case "Rectangle":
+          this.addShape(new Rectangle(name));
+          return "rectangle " + name + " successfully added";
+        case "Ellipse":
+          this.addShape(new Oval(name));
+          return "ellipse " + name + " successfully added";
+        default:
+          return "the given shape type is invalid";
+      }
+    }
+  }
+
+  @Override
   public ShapeInfo shapeInfoAtTime(String s, int tick) {
     if (s == null) {
       throw new IllegalArgumentException("given name is null");

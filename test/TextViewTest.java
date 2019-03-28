@@ -8,7 +8,6 @@ import cs3500.animator.model.shapes.Rectangle;
 import cs3500.animator.model.types.Color;
 import cs3500.animator.model.types.Position2D;
 import cs3500.animator.model.types.ShapeSize;
-import cs3500.animator.util.BadAppendable;
 import cs3500.animator.view.AnimationView;
 import cs3500.animator.view.AnimationView.ViewType;
 import cs3500.animator.view.ButtonListener;

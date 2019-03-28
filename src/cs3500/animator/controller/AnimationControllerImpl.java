@@ -1,26 +1,35 @@
 package cs3500.animator.controller;
 
 import cs3500.animator.model.AnimationModel;
+import cs3500.animator.model.AnimationModelImpl;
 import cs3500.animator.model.motions.info.ShapeInfo;
 import cs3500.animator.model.motions.info.ShapeInfoImpl;
-import cs3500.animator.model.shapes.Oval;
-import cs3500.animator.model.shapes.Rectangle;
 import cs3500.animator.model.shapes.Shape;
 import cs3500.animator.model.types.Color;
 import cs3500.animator.model.types.Position2D;
 import cs3500.animator.model.types.ShapeSize;
+import cs3500.animator.util.AnimationReader;
 import cs3500.animator.view.AnimationView;
 import cs3500.animator.view.AnimationView.ViewType;
 import cs3500.animator.view.ButtonListener;
+import cs3500.animator.view.SVGView;
+import cs3500.animator.view.TextView;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JColorChooser;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.Timer;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * An AnimationControllerImpl contains an AnimationModel and AnimationView. It can control
@@ -159,15 +168,19 @@ public class AnimationControllerImpl implements AnimationController {
       addKeyframe();
       view.resetFocus();
     });
-
     buttonClickedMap.put("Edit Keyframe Button", () -> {
       editKeyframe();
       view.resetFocus();
     });
-
     buttonClickedMap.put("Remove Keyframe Button", () -> {
       removeKeyframe();
       view.resetFocus();
+    });
+    buttonClickedMap.put("Save Button", () -> {
+      saveAnimation();
+    });
+    buttonClickedMap.put("Load Button", () -> {
+      loadAnimation();
     });
 
     buttonClickedMap.put("Exit Button", () -> {
@@ -180,25 +193,25 @@ public class AnimationControllerImpl implements AnimationController {
 
   private void addShape() {
     String shapeName = JOptionPane.showInputDialog("Enter shape name");
+    if (shapeName == null) {
+      JOptionPane.showMessageDialog(null, "error: must input shape name");
+      return;
+    }
     String[] options = {"Rectangle", "Ellipse"};
     String shapeType = (String)JOptionPane.showInputDialog(null, "What shape type?",
         "Shape type selector", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-    switch (shapeType) {
-      case "Rectangle":
-        this.model.addShape(new Rectangle(shapeName));
-        JOptionPane.showMessageDialog(null, "Rectangle " + shapeName + " added");
-        break;
-      case "Ellipse":
-        this.model.addShape(new Oval(shapeName));
-        JOptionPane.showMessageDialog(null, "Ellipse " + shapeName + " added");
-        break;
-      default:
-        break;
+    if (shapeType == null) {
+      return;
     }
+    String msg = this.model.addShape(shapeName, shapeType);
+    JOptionPane.showMessageDialog(null, msg);
   }
 
   private void removeShape() {
     String shapeName = JOptionPane.showInputDialog("Enter shape name");
+    if (shapeName == null) {
+      JOptionPane.showMessageDialog(null, "error: must input shape name");
+    }
     String message = model.deleteShape(shapeName);
     JOptionPane.showMessageDialog(null, message);
   }
@@ -257,6 +270,8 @@ public class AnimationControllerImpl implements AnimationController {
         JTextField inputW = new JTextField(Integer.toString(infoAtTime.getSize().getW()));
         JTextField inputH = new JTextField(Integer.toString(infoAtTime.getSize().getH()));
         JColorChooser colorChooser = new JColorChooser();
+        colorChooser.setColor(infoAtTime.getColor().getR(),
+            infoAtTime.getColor().getG(), infoAtTime.getColor().getB());
 
         Object[] secondPrompt = {
             "x-location:", inputX, "y-location:", inputY,
@@ -295,7 +310,8 @@ public class AnimationControllerImpl implements AnimationController {
         String msg = model.editKeyframe(shapeName.getText(), num, newShapeInfo);
         JOptionPane.showMessageDialog(null, msg);
       } else {
-        JOptionPane.showMessageDialog(null, "there is no keyframe at this time");
+        JOptionPane.showMessageDialog(null,
+            "there is no keyframe for shape " + shapeName.getText() + " at time " + num);
       }
     }
 
@@ -323,6 +339,60 @@ public class AnimationControllerImpl implements AnimationController {
       }
       String msg = model.deleteKeyframe(shapeName.getText(), num);
       JOptionPane.showMessageDialog(null, msg);
+    }
+  }
+
+  private void saveAnimation() {
+    String fileName = JOptionPane.showInputDialog("Output file name (without extension)");
+    if (fileName == null || fileName.equals("")) {
+      JOptionPane.showMessageDialog(null, "error: must input valid file name");
+      return;
+    }
+    String[] options = {"Text", "SVG"};
+    String outputType = (String)JOptionPane.showInputDialog(null, "What output type?",
+        "Shape type selector", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+    if (outputType == null) {
+      return;
+    }
+    try {
+      switch (outputType) {
+        case "Text":
+          new TextView(this.model, new FileWriter(fileName + ".txt")).makeVisible();
+          break;
+        case "SVG":
+          new SVGView(this.model, this.speed, new FileWriter(fileName + ".svg")).makeVisible();
+          break;
+        default:
+          JOptionPane.showMessageDialog(null, "error: unexpected view type");
+          break;
+      }
+    } catch (IOException e) {
+      JOptionPane.showMessageDialog(null,
+          "error with file saving; please try again");
+    }
+    JOptionPane.showMessageDialog(null, "view successfully saved");
+  }
+
+  private void loadAnimation() {
+    JFileChooser fchooser = new JFileChooser(".");
+    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+        "text files with animation descriptions", "txt");
+    fchooser.setFileFilter(filter);
+    int retvalue = fchooser.showOpenDialog(null);
+    if (retvalue == JFileChooser.APPROVE_OPTION) {
+      File f = fchooser.getSelectedFile();
+      AnimationModel mdl;
+      try {
+        mdl = AnimationReader.parseFile(new FileReader(f),
+            new AnimationModelImpl.Builder());
+      } catch (FileNotFoundException | IllegalArgumentException e) {
+        JOptionPane.showMessageDialog(null,
+            "error with file loading; please try again");
+        return;
+      }
+      this.model = mdl;
+      this.view.setModel(mdl);
+      this.restart();
     }
   }
 

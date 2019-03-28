@@ -98,5 +98,9 @@ public class VisualView extends JFrame implements AnimationView {
   public void setTickLabel(int speed, int tps) {
     //do nothing
   }
+  @Override
+  public void setModel(AnimationModel model) {
+    throw new UnsupportedOperationException("can't set model for visual view");
+  }
 
 }

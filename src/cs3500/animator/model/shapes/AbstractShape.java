@@ -136,7 +136,7 @@ abstract class AbstractShape implements Shape {
           return "keyframe successfully added for shape " + name + " at time " + time + "; "
               + "motion successfully added from time " + firstTime + " to " + secondTime;
         } else { //there is no info for the first keyframe
-          return "error: must add keyframe information for shape " + name + " at time "
+          return "error: must edit keyframe information for shape " + name + " at time "
               + soloKeyframeTime + " first";
         }
       }
@@ -285,6 +285,24 @@ abstract class AbstractShape implements Shape {
         }
       }
       return false;
+    }
+  }
+
+  @Override
+  public int[] getKeyframeTimes() {
+    if (motions.isEmpty()) {
+      if (soloKeyframeTime == -1) {
+        return new int[]{};
+      } else {
+        return new int[]{soloKeyframeTime};
+      }
+    } else {
+      int[] output = new int[motions.size()];
+      for (int i = 0; i < motions.size(); i++) {
+        output[i] = motions.get(i).getStartTime();
+      }
+      output[motions.size() - 1] = motions.get(motions.size() - 1).getFinishTime();
+      return output;
     }
   }
 

@@ -103,4 +103,10 @@ public interface Shape {
    * @throws IllegalArgumentException if the time is less than 0
    */
   boolean isKeyframe(int time);
+
+  /**
+   * Gets the times that represent keyframes for the this shape.
+   * @return an int array containing the times that have keyframes
+   */
+  int[] getKeyframeTimes();
 }

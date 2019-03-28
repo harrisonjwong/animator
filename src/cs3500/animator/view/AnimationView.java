@@ -61,7 +61,20 @@ public interface AnimationView {
    */
   boolean sameModel(AnimationModel m);
 
+  /**
+   * Sets the tick label on the edit view to have the given tick and ticks per second.
+   * @param tick the tick integer
+   * @param tps the tps integer
+   *
+   */
   void setTickLabel(int tick, int tps);
+
+  /**
+   * Sets the model of this animation view to the given model
+   * @param model the given {@link AnimationModel}
+   * @throws IllegalArgumentException if the model is null
+   */
+  void setModel(AnimationModel model);
 
 
   /**
