@@ -70,9 +70,11 @@ public interface AnimationView {
   void setTickLabel(int tick, int tps);
 
   /**
-   * Sets the model of this animation view to the given model
+   * Sets the model of this animation view to the given model. Only used for the edit view so
+   * a new view can be loaded.
    * @param model the given {@link AnimationModel}
    * @throws IllegalArgumentException if the model is null
+   * @throws UnsupportedOperationException if the view is not an edit view
    */
   void setModel(AnimationModel model);
 

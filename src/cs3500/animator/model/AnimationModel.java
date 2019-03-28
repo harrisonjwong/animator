@@ -54,7 +54,8 @@ public interface AnimationModel extends ReadOnlyAnimationModel {
   String deleteShape(String name);
 
   /**
-   * Adds a keyframe for a given shape name at a given time. If the shape is not found, does not error.
+   * Adds a keyframe for a given shape name at a given time. If the shape is not found,
+   * then a message is displayed in the return, but no error is thrown.
    * @param name the given shape name to add a keyframe for
    * @param time the time to add the keyframe at
    * @return a message to be displayed to the user, either confirming the keyframe addition or

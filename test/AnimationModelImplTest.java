@@ -880,15 +880,11 @@ public class AnimationModelImplTest {
 
   @Test
   public void shapeInfoTimeNoMotions() {
-    try {
-      AnimationModel m = new AnimationModelImpl();
-      m.addShape(new Rectangle("R"));
-      m.shapeInfoAtTime("R", 0);
-      fail("exception not thrown");
-    } catch (IllegalArgumentException e) {
-      assertEquals("this shape has no info at the given time", e.getMessage());
-    }
-
+    AnimationModel m = new AnimationModelImpl();
+    m.addShape(new Rectangle("R"));
+    assertEquals(new Position2D(0, 0), m.shapeInfoAtTime("R", 0).getPosition());
+    assertEquals(new ShapeSize(0, 0), m.shapeInfoAtTime("R", 0).getSize());
+    assertEquals(new Color(0, 0, 0), m.shapeInfoAtTime("R", 0).getColor());
   }
 
   @Test

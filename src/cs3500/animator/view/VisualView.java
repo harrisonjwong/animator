@@ -16,7 +16,7 @@ public class VisualView extends JFrame implements AnimationView {
 
   private ReadOnlyAnimationModel model;
   private AnimationPanel panel;
-  private JScrollPane pane;
+  //private JScrollPane pane;
 
   /**
    * Constructs a visual view given an animation model and ticks per second.
@@ -46,7 +46,7 @@ public class VisualView extends JFrame implements AnimationView {
 
     panel = new AnimationPanel();
     panel.setPreferredSize(new Dimension(model.getWindowWidth(), model.getWindowHeight()));
-    pane = new JScrollPane(panel);
+    JScrollPane pane = new JScrollPane(panel);
     pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     pane.setPreferredSize(new Dimension(model.getWindowWidth(), model.getWindowHeight()));
@@ -98,6 +98,7 @@ public class VisualView extends JFrame implements AnimationView {
   public void setTickLabel(int speed, int tps) {
     //do nothing
   }
+
   @Override
   public void setModel(AnimationModel model) {
     throw new UnsupportedOperationException("can't set model for visual view");

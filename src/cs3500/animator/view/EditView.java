@@ -46,8 +46,8 @@ public class EditView extends JFrame implements AnimationView {
 
   private JLabel tickLabel;
 
-  private JPanel topButtonPanel;
-  private JPanel bottomButtonPanel;
+  //private JPanel topButtonPanel;
+  //private JPanel bottomButtonPanel;
   private JPanel selectionListPanel;
 
   private JList<String> listOfStrings;
@@ -96,13 +96,13 @@ public class EditView extends JFrame implements AnimationView {
     this.tickLabel = new JLabel();
 
     //Top button bar
-    this.topButtonPanel = new JPanel();
-    this.topButtonPanel.add(playPauseButton);
-    this.topButtonPanel.add(restartButton);
-    this.topButtonPanel.add(loopButton);
-    this.topButtonPanel.add(incSpeedButton);
-    this.topButtonPanel.add(decSpeedButton);
-    this.topButtonPanel.add(this.tickLabel);
+    JPanel topButtonPanel = new JPanel();
+    topButtonPanel.add(playPauseButton);
+    topButtonPanel.add(restartButton);
+    topButtonPanel.add(loopButton);
+    topButtonPanel.add(incSpeedButton);
+    topButtonPanel.add(decSpeedButton);
+    topButtonPanel.add(this.tickLabel);
     this.add(topButtonPanel, BorderLayout.NORTH);
 
 
@@ -123,14 +123,14 @@ public class EditView extends JFrame implements AnimationView {
     this.loadButton.setActionCommand("Load Button");
 
 
-    this.bottomButtonPanel = new JPanel();
-    this.bottomButtonPanel.add(addShapeButton);
-    this.bottomButtonPanel.add(removeShapeButton);
-    this.bottomButtonPanel.add(addKeyframeButton);
-    this.bottomButtonPanel.add(editKeyframeButton);
-    this.bottomButtonPanel.add(removeKeyframeButton);
-    this.bottomButtonPanel.add(saveButton);
-    this.bottomButtonPanel.add(loadButton);
+    JPanel bottomButtonPanel = new JPanel();
+    bottomButtonPanel.add(addShapeButton);
+    bottomButtonPanel.add(removeShapeButton);
+    bottomButtonPanel.add(addKeyframeButton);
+    bottomButtonPanel.add(editKeyframeButton);
+    bottomButtonPanel.add(removeKeyframeButton);
+    bottomButtonPanel.add(saveButton);
+    bottomButtonPanel.add(loadButton);
     this.add(bottomButtonPanel, BorderLayout.SOUTH);
 
     selectionListPanel = new JPanel();
@@ -200,8 +200,8 @@ public class EditView extends JFrame implements AnimationView {
       Shape shape = model.getShapes().get(name);
       if (shape != null) {
         JOptionPane.showMessageDialog(null,
-            "shape " + name + " has keyframes at times " +
-                Arrays.toString(shape.getKeyframeTimes()));
+            "shape " + name + " has keyframes at times "
+                + Arrays.toString(shape.getKeyframeTimes()));
       }
     });
   }
