@@ -26,7 +26,7 @@ public class AnimationPanel extends JPanel {
       String type = types.get(i);
       g2.setColor(new Color(info.getColor().getR(), info.getColor().getG(),
           info.getColor().getB()));
-      if (type.equals("rectangle")) {
+      if (type.equals("rectangle")) { //string checking used because these methods already exist
         g2.fillRect(info.getPosition().getX(), info.getPosition().getY(),
             info.getSize().getW(), info.getSize().getH());
       } else if (type.equals("ellipse")) {

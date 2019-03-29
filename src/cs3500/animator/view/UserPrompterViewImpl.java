@@ -69,6 +69,7 @@ public class UserPrompterViewImpl implements UserPrompterView {
     String shapeName = JOptionPane.showInputDialog("Enter shape name");
     if (shapeName == null) {
       JOptionPane.showMessageDialog(null, "error: must input shape name");
+      return null;
     }
     return () -> {
       String message = model.deleteShape(shapeName);
@@ -248,6 +249,7 @@ public class UserPrompterViewImpl implements UserPrompterView {
     } catch (IOException e) {
       JOptionPane.showMessageDialog(null,
           "error with file saving; please try again");
+      return;
     }
     JOptionPane.showMessageDialog(null, "view successfully saved");
   }

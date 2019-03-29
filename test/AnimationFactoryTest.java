@@ -1,7 +1,6 @@
 import cs3500.animator.util.AnimationFactory;
 import cs3500.animator.view.AnimationView;
 import cs3500.animator.view.AnimationView.ViewType;
-import cs3500.animator.view.EditView;
 import cs3500.animator.view.SVGView;
 import cs3500.animator.view.TextView;
 import cs3500.animator.view.VisualView;
@@ -237,10 +236,4 @@ public class AnimationFactoryTest {
       fail("exception thrown");
     }
   }
-
-  @Test
-  public void mockEditView() {
-
-  }
-
 }
