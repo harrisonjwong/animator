@@ -43,13 +43,8 @@ public class EditView extends JFrame implements AnimationView {
   private JButton removeKeyframeButton;
   private JButton saveButton;
   private JButton loadButton;
-
   private JLabel tickLabel;
-
-  //private JPanel topButtonPanel;
-  //private JPanel bottomButtonPanel;
   private JPanel selectionListPanel;
-
   private JList<String> listOfStrings;
 
   /**
@@ -105,7 +100,6 @@ public class EditView extends JFrame implements AnimationView {
     topButtonPanel.add(this.tickLabel);
     this.add(topButtonPanel, BorderLayout.NORTH);
 
-
     //Editing controls
     this.addShapeButton = new JButton("Add Shape");
     this.addShapeButton.setActionCommand("Add Shape Button");
@@ -122,7 +116,7 @@ public class EditView extends JFrame implements AnimationView {
     this.loadButton = new JButton("Load");
     this.loadButton.setActionCommand("Load Button");
 
-
+    //bottom button bar
     JPanel bottomButtonPanel = new JPanel();
     bottomButtonPanel.add(addShapeButton);
     bottomButtonPanel.add(removeShapeButton);
@@ -133,19 +127,16 @@ public class EditView extends JFrame implements AnimationView {
     bottomButtonPanel.add(loadButton);
     this.add(bottomButtonPanel, BorderLayout.SOUTH);
 
+    //the list of shapes
     selectionListPanel = new JPanel();
     selectionListPanel.setBorder(BorderFactory.createTitledBorder("Shapes"));
-
     JScrollPane shapesScrollPane = new JScrollPane(selectionListPanel);
     this.add(shapesScrollPane, BorderLayout.EAST);
-
     DefaultListModel<String> shapeNames = new DefaultListModel<>();
     model.getShapes().keySet().forEach( (s) -> shapeNames.addElement(s));
     listOfStrings = new JList<>(shapeNames);
     listOfStrings.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
     selectionListPanel.add(listOfStrings);
-    pane.setPreferredSize(new Dimension(700, 700));
     this.pack();
   }
 

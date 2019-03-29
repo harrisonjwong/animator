@@ -226,4 +226,25 @@ public class TextViewTest {
     }
   }
 
+  @Test
+  public void setTickLabelError() {
+    try {
+      view.setTickLabel(0, 0);
+      fail("exception not thrown");
+    } catch (UnsupportedOperationException e) {
+      assertEquals("can't set label for textual views", e.getMessage());
+    }
+  }
+
+  @Test
+  public void setModelLabelError() {
+    try {
+      view.setModel(new AnimationModelImpl());
+      fail("exception not thrown");
+    } catch (UnsupportedOperationException e) {
+      assertEquals("can't set model for textual views", e.getMessage());
+    }
+  }
+
+
 }

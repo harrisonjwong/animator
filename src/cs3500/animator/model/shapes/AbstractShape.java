@@ -119,7 +119,7 @@ abstract class AbstractShape implements Shape {
   @Override
   public String addKeyframe(int time) {
     if (time < 0) {
-      throw new IllegalArgumentException("the time can't be less than 1");
+      throw new IllegalArgumentException("the time can't be less than 0");
     }
     if (motions.isEmpty()) {
       if (this.soloKeyframeTime == -1) { //there is a no time for a keyframe currently
@@ -211,7 +211,6 @@ abstract class AbstractShape implements Shape {
         return "keyframe successfully edited for shape " + name + " at time " + time;
       } else { //edit two motions
         //should only go to second to last motion, avoiding index oob error
-        //TODO: Potential error with edge case sizes, think harder
         for (int i = 0; i < motions.size() - 1; i++) {
           Motion current = motions.get(i);
           Motion next = motions.get(i + 1);
@@ -252,7 +251,6 @@ abstract class AbstractShape implements Shape {
         motions.remove(motions.size() - 1);
         return "keyframe successfully deleted for shape " + name + " at time " + time;
       } else { //it's somewhere in the middle
-        //TODO: Potential error with edge case sizes, think harder
         for (int i = 0; i < motions.size() - 1; i++) {
           Motion current = motions.get(i);
           Motion next = motions.get(i + 1);
@@ -297,11 +295,12 @@ abstract class AbstractShape implements Shape {
         return new int[]{soloKeyframeTime};
       }
     } else {
-      int[] output = new int[motions.size()];
+      int[] output = new int[motions.size() + 1];
       for (int i = 0; i < motions.size(); i++) {
         output[i] = motions.get(i).getStartTime();
       }
-      output[motions.size() - 1] = motions.get(motions.size() - 1).getFinishTime();
+      output[motions.size()] = motions.get(motions.size() - 1).getFinishTime();
+
       return output;
     }
   }

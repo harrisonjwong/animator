@@ -19,6 +19,18 @@ public interface AnimationModel extends ReadOnlyAnimationModel {
   void addShape(Shape s);
 
   /**
+   * Adds a shape based on a name and type of shape. Different use case from void addShape, as
+   * this method does not crash the program if the shape name is invalid. Instead it just
+   * doesn't change the model, and returns a string error message.
+   * @param name the name of the shape to be added
+   * @param type the type of the shape to be added (Rectangle or Ellipse)
+   * @return a message to be displayed to the user, either confirming the shape deletion or
+   *         an appropriate error message
+   * @throws IllegalArgumentException if either of the inputs are null
+   */
+  String addShape(String name, String type);
+
+  /**
    * Adds a new animation starting at the end of the previous animation.
    * @param s the name of the shape to animate
    * @param m the given motion to add to the shape
@@ -32,17 +44,6 @@ public interface AnimationModel extends ReadOnlyAnimationModel {
    * @return the animation formatted as text
    */
   String animationAsText();
-
-  /**
-   * Adds a shape based on a name and type of shape. Different use case from void addShape, as
-   * this method does not crash the program if the shape name is invalid.
-   * @param name the name of the shape to be added
-   * @param type the type of the shape to be added (Rectangle or Ellipse)
-   * @return a message to be displayed to the user, either confirming the shape deletion or
-   *         an appropriate error message
-   * @throws IllegalArgumentException if either of the inputs are null
-   */
-  String addShape(String name, String type);
 
   /**
    * Deletes a shape based on a name.

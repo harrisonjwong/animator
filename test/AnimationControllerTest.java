@@ -11,13 +11,20 @@ import cs3500.animator.model.types.Position2D;
 import cs3500.animator.model.types.ShapeSize;
 import cs3500.animator.view.AnimationView;
 import cs3500.animator.view.AnimationView.ViewType;
+import cs3500.animator.view.ButtonListener;
 import cs3500.animator.view.EditView;
 import cs3500.animator.view.SVGView;
 import cs3500.animator.view.TextView;
+import cs3500.animator.view.UserPrompterView;
+import cs3500.animator.view.UserPrompterViewImpl;
 import cs3500.animator.view.VisualView;
+import java.awt.event.ActionEvent;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Tests for the AnimationController.
@@ -88,5 +95,128 @@ public class AnimationControllerTest {
     AnimationView view = new EditView(m, 20);
     assertEquals(ViewType.Edit, view.getViewType());
   }
+
+  @Test
+  public void editView2() {
+    AnimationModel m = new AnimationModelImpl();
+    m.addShape(new Rectangle("R"));
+    ShapeInfo info1 = new ShapeInfoImpl(new Position2D(200, 200), new ShapeSize(50, 100),
+        new Color(255, 0, 0));
+    m.addAnimation("R", new MotionImpl(0, 20, info1, info1));
+    AnimationView view = new EditView(m, 20);
+    AnimationController controller = new AnimationControllerImpl(view, m, 1);
+    controller.start();
+    assertEquals(ViewType.Edit, view.getViewType());
+  }
+
+  @Test
+  public void constructorError() {
+    try {
+      new AnimationControllerImpl(null, null, 1);
+      fail("exception not thrown");
+    } catch (IllegalArgumentException e) {
+      assertEquals("given view and/or model is null", e.getMessage());
+    }
+  }
+
+  @Test
+  public void constructorError2() {
+    AnimationModel m = new AnimationModelImpl();
+    m.addShape(new Rectangle("R"));
+    ShapeInfo info1 = new ShapeInfoImpl(new Position2D(200, 200), new ShapeSize(50, 100),
+        new Color(255, 0, 0));
+    m.addAnimation("R", new MotionImpl(0, 20, info1, info1));
+    AnimationView view = new TextView(m, new StringBuilder());
+    try {
+      new AnimationControllerImpl(view, m, -1);
+      fail("exception not thrown");
+    } catch (IllegalArgumentException e) {
+      assertEquals("speed must be greater than 0", e.getMessage());
+    }
+  }
+
+  @Test
+  public void constructorError3() {
+    AnimationModel m = new AnimationModelImpl();
+    m.addShape(new Rectangle("R"));
+    ShapeInfo info1 = new ShapeInfoImpl(new Position2D(200, 200), new ShapeSize(50, 100),
+        new Color(255, 0, 0));
+    m.addAnimation("R", new MotionImpl(0, 20, info1, info1));
+    AnimationView view = new TextView(new AnimationModelImpl(), new StringBuilder());
+    try {
+      new AnimationControllerImpl(view, m, 1);
+      fail("exception not thrown");
+    } catch (IllegalStateException e) {
+      assertEquals("the model in the view and the model in the controller "
+          + "must be the same view", e.getMessage());
+    }
+  }
+
+  @Test
+  public void buttonListener() {
+    ButtonListener b = new ButtonListener();
+    AnimationModel m = new AnimationModelImpl();
+    Map<String, Runnable> actionMap = new HashMap<>();
+    assertEquals(false, m.getShapes().containsKey("R"));
+    actionMap.put("Hi", () -> m.addShape(new Rectangle("R")));
+    b.setButtonClickedActionMap(actionMap);
+    b.actionPerformed(new ActionEvent(this, 0, "Hi"));
+    assertEquals(true, m.getShapes().containsKey("R"));
+  }
+
+  @Test
+  public void prompterConstructorError1() {
+    try {
+      new UserPrompterViewImpl(null, 20);
+      fail("exception not thrown");
+    } catch (IllegalArgumentException e) {
+      assertEquals("model is null", e.getMessage());
+    }
+  }
+
+  @Test
+  public void prompterConstructorError2() {
+    try {
+      new UserPrompterViewImpl(new AnimationModelImpl(), -1);
+      fail("exception not thrown");
+    } catch (IllegalArgumentException e) {
+      assertEquals("the speed is less than 0", e.getMessage());
+    }
+  }
+
+  @Test
+  public void prompterSetModelFail() {
+    try {
+      new UserPrompterViewImpl(new AnimationModelImpl(), 1).setModel(null);
+      fail("exception not thrown");
+    } catch (IllegalArgumentException e) {
+      assertEquals("given model is null", e.getMessage());
+    }
+  }
+
+  @Test
+  public void prompterSetModel() {
+    UserPrompterView upv = new UserPrompterViewImpl(new AnimationModelImpl(), 1);
+    try {
+      upv.setModel(new AnimationModelImpl());
+    } catch (Exception e) {
+      fail("exception thrown");
+    }
+  }
+
+  @Test
+  public void editViewActionsTest() {
+    ButtonListener b = new ButtonListener();
+    AnimationModel m = new AnimationModelImpl();
+    Map<String, Runnable> actionMap = new HashMap<>();
+    assertEquals(false, m.getShapes().containsKey("R"));
+    actionMap.put("Play Button", () -> m.addShape(new Rectangle("R")));
+    b.setButtonClickedActionMap(actionMap);
+    AnimationView view = new EditView(m, 20);
+    view.addActionListener(b);
+    b.actionPerformed(new ActionEvent(this, 0, "Play Button"));
+    assertEquals(true, m.getShapes().containsKey("R"));
+  }
+
 
 }

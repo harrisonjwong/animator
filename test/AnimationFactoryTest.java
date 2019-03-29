@@ -1,5 +1,7 @@
 import cs3500.animator.util.AnimationFactory;
 import cs3500.animator.view.AnimationView;
+import cs3500.animator.view.AnimationView.ViewType;
+import cs3500.animator.view.EditView;
 import cs3500.animator.view.SVGView;
 import cs3500.animator.view.TextView;
 import cs3500.animator.view.VisualView;
@@ -99,7 +101,7 @@ public class AnimationFactoryTest {
     try {
       AnimationView view = new AnimationFactory(new String[]{"-view", "text", "-in",
           "buildings.txt"}).getView();
-      assertEquals(true, view instanceof TextView);
+      assertEquals(ViewType.Text, view.getViewType());
     } catch (FileNotFoundException e) {
       fail("exception thrown");
     }
@@ -121,7 +123,7 @@ public class AnimationFactoryTest {
     try {
       AnimationView view = new AnimationFactory(new String[]{"-view", "visual", "-in",
           "buildings.txt"}).getView();
-      assertEquals(true, view instanceof VisualView);
+      assertEquals(ViewType.Visual, view.getViewType());
     } catch (FileNotFoundException e) {
       fail("exception thrown");
     }
@@ -139,11 +141,37 @@ public class AnimationFactoryTest {
   }
 
   @Test
+  public void editViewType() {
+    try {
+      AnimationView view = new AnimationFactory(new String[]{"-view", "edit", "-in",
+          "buildings.txt"}).getView();
+      assertEquals(ViewType.Edit, view.getViewType());
+    } catch (FileNotFoundException e) {
+      fail("exception thrown");
+    }
+  }
+
+
+  @Test
+  public void editViewType2() {
+    try {
+      AnimationView view = new AnimationFactory(new String[]{"-view", "edit", "-in",
+          "buildings.txt"}).getView();
+      assertEquals(false, view instanceof TextView);
+    } catch (FileNotFoundException e) {
+      fail("exception thrown");
+    }
+  }
+
+  @Test
   public void svgViewType() {
     try {
-      AnimationView view = new AnimationFactory(new String[]{"-view", "svg", "-in",
-          "buildings.txt"}).getView();
+      AnimationFactory factory = new AnimationFactory(new String[]{"-view", "svg", "-in",
+          "buildings.txt"});
+      AnimationView view = factory.getView();
       assertEquals(true, view instanceof SVGView);
+      assertEquals(false, factory.getModel().getShapes().isEmpty());
+      assertEquals(1, factory.getSpeed());
     } catch (FileNotFoundException e) {
       fail("exception thrown");
     }
@@ -208,6 +236,11 @@ public class AnimationFactoryTest {
     } catch (FileNotFoundException e) {
       fail("exception thrown");
     }
+  }
+
+  @Test
+  public void mockEditView() {
+
   }
 
 }

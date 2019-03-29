@@ -7,6 +7,7 @@ import cs3500.animator.model.shapes.Rectangle;
 import cs3500.animator.model.types.Color;
 import cs3500.animator.model.types.Position2D;
 import cs3500.animator.model.types.ShapeSize;
+import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,7 +15,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 /**
- * Test class for keyframe addition to model.
+ * Test class for keyframe additions to model. Also includes tests for edit view and its related
+ * features.
  */
 public class AnimationModelKeyframeTests {
 
@@ -482,10 +484,240 @@ public class AnimationModelKeyframeTests {
   public void addKeyframeNone() {
     AnimationModel m = new AnimationModelImpl();
     m.addShape(new Rectangle("R"));
-    ShapeInfo info1 = new ShapeInfoImpl(new Position2D(200, 200), new ShapeSize(50, 100),
-        new Color(255, 0, 0));
     m.addKeyframe("R", 10);
     assertEquals("canvas 0 0 500 500\n" + "shape R rectangle\n", m.animationAsText());
   }
 
+  @Test
+  public void isKeyframe() {
+    AnimationModel m = new AnimationModelImpl();
+    m.addShape(new Rectangle("R"));
+    ShapeInfo info1 = new ShapeInfoImpl(new Position2D(200, 200), new ShapeSize(50, 100),
+        new Color(255, 0, 0));
+    m.addAnimation("R", new MotionImpl(0, 20, info1, info1));
+    assertEquals(true, m.getShapes().get("R").isKeyframe(0));
+    assertEquals(false, m.getShapes().get("R").isKeyframe(10));
+    assertEquals(true, m.getShapes().get("R").isKeyframe(20));
+    assertEquals(false, m.getShapes().get("R").isKeyframe(30));
+  }
+
+  @Test
+  public void isKeyframeError() {
+    AnimationModel m = new AnimationModelImpl();
+    m.addShape(new Rectangle("R"));
+    ShapeInfo info1 = new ShapeInfoImpl(new Position2D(200, 200), new ShapeSize(50, 100),
+        new Color(255, 0, 0));
+    m.addAnimation("R", new MotionImpl(0, 20, info1, info1));
+    try {
+      m.getShapes().get("R").isKeyframe(-1);
+      fail("exception not thrown");
+    } catch (IllegalArgumentException e) {
+      assertEquals("time cannot be less than 0", e.getMessage());
+    }
+  }
+
+  @Test
+  public void isKeyframeSolo() {
+    AnimationModel m = new AnimationModelImpl();
+    m.addShape(new Rectangle("R"));
+    m.addKeyframe("R", 0);
+    assertEquals(true, m.getShapes().get("R").isKeyframe(0));
+    assertEquals(false, m.getShapes().get("R").isKeyframe(10));
+  }
+
+  @Test
+  public void getKeyframeTimesEmpty() {
+    AnimationModel m = new AnimationModelImpl();
+    m.addShape(new Rectangle("R"));
+    assertEquals(Arrays.toString(new int[]{}),
+        Arrays.toString(m.getShapes().get("R").getKeyframeTimes()));
+  }
+
+  @Test
+  public void getKeyframeTimesSolo() {
+    AnimationModel m = new AnimationModelImpl();
+    m.addShape(new Rectangle("R"));
+    m.addKeyframe("R", 0);
+    assertEquals(Arrays.toString(new int[]{0}),
+        Arrays.toString(m.getShapes().get("R").getKeyframeTimes()));
+  }
+
+  @Test
+  public void getKeyframeTimesMultiple() {
+    AnimationModel m = new AnimationModelImpl();
+    m.addShape(new Rectangle("R"));
+    ShapeInfo info1 = new ShapeInfoImpl(new Position2D(200, 200), new ShapeSize(50, 100),
+        new Color(255, 0, 0));
+    m.addAnimation("R", new MotionImpl(0, 20, info1, info1));
+    assertEquals(Arrays.toString(new int[]{0, 20}),
+        Arrays.toString(m.getShapes().get("R").getKeyframeTimes()));
+  }
+
+  @Test
+  public void addShapeStringNullInput() {
+    try {
+      model.addShape(null, "Rectangle");
+    } catch (IllegalArgumentException e) {
+      assertEquals("one or more of the inputs are null", e.getMessage());
+    }
+  }
+
+  @Test
+  public void addShapeStringNullInput2() {
+    try {
+      model.addShape("R", null);
+    } catch (IllegalArgumentException e) {
+      assertEquals("one or more of the inputs are null", e.getMessage());
+    }
+  }
+
+  @Test
+  public void addShapeStringNullInput3() {
+    try {
+      model.addShape(null, null);
+    } catch (IllegalArgumentException e) {
+      assertEquals("one or more of the inputs are null", e.getMessage());
+    }
+  }
+
+  @Test
+  public void addShapeStringOutput() {
+    AnimationModel m = new AnimationModelImpl();
+    String msg = m.addShape("R", "Rectangle");
+    assertEquals("rectangle R successfully added", msg);
+    assertEquals(true, m.getShapes().containsKey("R"));
+    assertEquals(false, m.getShapes().containsKey("S"));
+  }
+
+  @Test
+  public void addShapeStringOutput2() {
+    AnimationModel m = new AnimationModelImpl();
+    String msg = m.addShape("E", "Ellipse");
+    assertEquals("ellipse E successfully added", msg);
+    assertEquals(true, m.getShapes().containsKey("E"));
+    assertEquals(false, m.getShapes().containsKey("S"));
+  }
+
+  @Test
+  public void addShapeStringOutput3() {
+    AnimationModel m = new AnimationModelImpl();
+    String msg = m.addShape("E", "Lul");
+    assertEquals("the given shape type is invalid", msg);
+  }
+
+  @Test
+  public void addShapeStringOutput4() {
+    AnimationModel m = new AnimationModelImpl();
+    m.addShape(new Rectangle("R"));
+    String msg = m.addShape("R", "Rectangle");
+    assertEquals("the given shape name already exists", msg);
+    String msg2 = m.addShape("R", "Ellipse");
+    assertEquals("the given shape name already exists", msg2);
+  }
+
+  @Test
+  public void deleteShape() {
+    AnimationModel m = new AnimationModelImpl();
+    String msg = m.addShape("R", "Rectangle");
+    assertEquals("rectangle R successfully added", msg);
+    assertEquals(true, m.getShapes().containsKey("R"));
+    String msg2 = m.deleteShape("R");
+    assertEquals("shape R deleted", msg2);
+    assertEquals(false, m.getShapes().containsKey("R"));
+  }
+
+  @Test
+  public void deleteShape2() {
+    AnimationModel m = new AnimationModelImpl();
+    String msg = m.addShape("R", "Rectangle");
+    assertEquals("rectangle R successfully added", msg);
+    assertEquals(true, m.getShapes().containsKey("R"));
+    String msg2 = m.deleteShape("S");
+    assertEquals("shape S cannot be found", msg2);
+    assertEquals(true, m.getShapes().containsKey("R"));
+  }
+
+  @Test
+  public void deleteShapeNull() {
+    try {
+      model.deleteShape(null);
+      fail("exception not thrown");
+    } catch (IllegalArgumentException e) {
+      assertEquals("the given name is null", e.getMessage());
+    }
+  }
+
+  @Test
+  public void getEndingTickEmpty() {
+    assertEquals(0, model.getEndingTick());
+  }
+
+  @Test
+  public void getEndingTickNonEmpty() {
+    AnimationModel m = new AnimationModelImpl();
+    m.addShape(new Rectangle("R"));
+    ShapeInfo info1 = new ShapeInfoImpl(new Position2D(200, 200), new ShapeSize(50, 100),
+        new Color(255, 0, 0));
+    m.addAnimation("R", new MotionImpl(0, 20, info1, info1));
+    assertEquals(20, m.getEndingTick());
+  }
+
+  @Test
+  public void getEndingTickNonEmpty2() {
+    AnimationModel m = new AnimationModelImpl();
+    m.addShape(new Rectangle("R"));
+    ShapeInfo info1 = new ShapeInfoImpl(new Position2D(200, 200), new ShapeSize(50, 100),
+        new Color(255, 0, 0));
+    m.addAnimation("R", new MotionImpl(0, 20, info1, info1));
+    assertEquals(20, m.getEndingTick());
+    m.addAnimation("R", new MotionImpl(20, 40, info1, info1));
+    assertEquals(40, m.getEndingTick());
+  }
+
+  @Test
+  public void testIsKeyframe() {
+    AnimationModel m = new AnimationModelImpl();
+    m.addShape(new Rectangle("R"));
+    ShapeInfo info1 = new ShapeInfoImpl(new Position2D(200, 200), new ShapeSize(50, 100),
+        new Color(255, 0, 0));
+    m.addAnimation("R", new MotionImpl(0, 20, info1, info1));
+    m.addAnimation("R", new MotionImpl(20, 40, info1, info1));
+    assertEquals(true, m.isKeyframe("R", 0));
+    assertEquals(false, m.isKeyframe("S", 0));
+    assertEquals(true, m.isKeyframe("R", 20));
+
+
+  }
+
+  @Test
+  public void isKeyframeBadInput() {
+    try {
+      model.isKeyframe(null, 1);
+      fail("exception not thrown");
+    } catch (IllegalArgumentException e) {
+      assertEquals("the given name is null", e.getMessage());
+    }
+  }
+
+  @Test
+  public void isKeyframeBadInput2() {
+    AnimationModel m = new AnimationModelImpl();
+    m.addShape(new Rectangle("R"));
+    try {
+      model.isKeyframe("R", -1);
+      fail("exception not thrown");
+    } catch (IllegalArgumentException e) {
+      assertEquals("the given time cannot be less than 0", e.getMessage());
+    }
+  }
+
+  @Test
+  public void addKeyframeInvalidTime() {
+    try {
+      model.addKeyframe("R", -1);
+      fail("exception not thrown");
+    } catch (IllegalArgumentException e) {
+      assertEquals("the given time cannot be less than 0", e.getMessage());
+    }
+  }
 }
