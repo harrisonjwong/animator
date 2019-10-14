@@ -60,105 +60,56 @@ The edit view:
 
 ---
 
-Shape editing is confusing so this is the documentation I wrote to make sense of it myself:
-
+```
 String addKeyframe(String name, int time);
-
 // name represents the shape to be adding keyframe to
-
 // time represents when to add the keyframe
-
 // returns a string so the user will get a useful success or error message
-
 Adding a keyframe doesn't specify any shape info, instead it just infers
-
 shape info wherever possible. If the shape is already animated, then there are 4 cases.
-
 First, the inputted time is before the start of the animation.
-
 Then a new motion is added from the inputted time to the start of the animation,
-
 extending the shape information at the start of the animation.
-
 Second, the inputted time is after the end of the animation.
-
 Then a new motion is added from the end of animation to the inputted time,
-
 extending the shape information at the end of the animation.
-
 Third, the inputted time is on an existing keyframe. Do nothing except
-
 inform the user of this revelation. Fourth, the inputted time is in the middle
-
 of an existing motion. Then create two motions, and insert them in place of that motion.
-
 If we have Motion (Start x, End y), then we replace it with
-
 Motion1 (Start x, End inputted time) and Motion2 (Start inputted time, End y),
-
 and use the tween function to get where the shape should be at the inputted time.
-
 The other case is if the shape is not yet animated.
-
 There are two fields storing a preliminary time and shape information for a shape.
-
 They are initialized to dummy values when a Shape is constructed.
-
 To successfully animate a shape, a specific sequence of events must happen.
-
 First, a keyframe is added for a time. This sets the preliminary time to that time.
-
 Second, that keyframe MUST be edited, based on its time.
-
 This sets the preliminary shape information to whatever is inputted.
-
 Finally, another keyframe must be added. This creates the first motion,
-
 from the lesser of the two times to the greater of the two times, with the
-
 motion starting and ending at the preliminary shape information.
 
 String editKeyframe(String name, int time, ShapeInfo info);
-
 //name and time are the same as above
-
 //ShapeInfo is the position, color, and size you want the shape to be at the given time
-
 Editing a keyframe has two cases as well. If there are motions,
-
 then it is checked if there is a keyframe at that time. If there is a
-
 keyframe at that time, then it is edited to the inputted ShapeInfo.
-
 If there is not a keyframe at that time, then there is an error message to the user.
-
 If there are no motions, then it is checked whether the time matches the preliminary
-
 keyframe, and the preliminary shape info doesn't exist yet. If so, then the preliminary
-
 shape info is set. Otherwise, an error message is outputted to the user.
 
 String deleteKeyframe(String name, int time);
-
 //name and time are the same as above
-
 Deleting a keyframe has two cases as well.
-
 If there are motions, then there are the following cases.
-
 First, it is checked whether the start of the first motion matches the given time.
-
 If it does, then the first motion is deleted. Second, it is checked whether the
-
 end of the last motion matches the given time. If it does, then the last motion is deleted.
-
 Third, it is checked whether there is any other keyframe matching the time. If so,
-
 imagine the two Motions to be Motion1 (Start x, End y) and Motion2 (Start y, End z).
-
 Then they are replaced with a single Motion (Start x, End z). Finally, if none of
-
 these pass, then an error message is outputted.
-
-
-
+```
