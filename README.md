@@ -60,6 +60,8 @@ The edit view:
 
 ---
 
+Shape editing is confusing so this is the documentation I wrote to make sense of it myself: (if you're here for some reason and you want me to explain it, I can)
+
 ```
 String addKeyframe(String name, int time);
 // name represents the shape to be adding keyframe to
