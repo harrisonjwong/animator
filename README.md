@@ -45,18 +45,18 @@ The visual view:
 The edit view:
 * will open a window with the animation playing and have an option to interact with the animation
 * has the following controls:
- * Play/Pause - plays/pauses
- * Restart - restarts the animation (starts playing again if paused)
- * Loop - enable/disable looping of animation
- * Speed Up - increases speed of animation
- * Speed Down - decreases speed of animation
- * Add Shape - adds a shape by type (Rectangle or Oval) and name
- * Remove Shape - removes a shape by name
- * Add Keyframe - makes a shape be editable at a certain timepoint
- * Edit Keyframe - edits a shape at a certain time
- * Remove Keyframe - removes editability of a shape at a certain timepoint
- * Save - saves current animation as text or svg file
- * Load - replaces current animation with one loaded from text file
+  * Play/Pause - plays/pauses
+  * Restart - restarts the animation (starts playing again if paused)
+  * Loop - enable/disable looping of animation
+  * Speed Up - increases speed of animation
+  * Speed Down - decreases speed of animation
+  * Add Shape - adds a shape by type (Rectangle or Oval) and name
+  * Remove Shape - removes a shape by name
+  * Add Keyframe - makes a shape be editable at a certain timepoint
+  * Edit Keyframe - edits a shape at a certain time
+  * Remove Keyframe - removes editability of a shape at a certain timepoint
+  * Save - saves current animation as text or svg file
+  * Load - replaces current animation with one loaded from text file
 
 ---
 
